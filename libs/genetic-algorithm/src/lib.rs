@@ -4,9 +4,26 @@ pub trait Individual {
     fn fitness(&self) -> f32;
 }
 
+pub trait SelectionMethod {
+    fn select<'a, I>(&self, rng: &mut dyn rand::RngCore, population: &'a [I]) -> &'a I
+    where
+        I: Individual;
+}
+
 impl RouletteWheelSelection {
     pub fn new() -> RouletteWheelSelection {
         RouletteWheelSelection
+    }
+}
+
+impl SelectionMethod for RouletteWheelSelection {
+    fn select<'a, I>(&self, rng: &mut dyn rand::RngCore, population: &'a [I]) -> &'a I
+    where
+        I: Individual,
+    {
+        population
+            .choose_weighted(rng, |i| i.fitness())
+            .expect("Received empty population")
     }
 }
 
