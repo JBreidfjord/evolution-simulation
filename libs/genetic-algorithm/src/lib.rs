@@ -1,3 +1,5 @@
+use rand::seq::SliceRandom;
+
 pub struct RouletteWheelSelection;
 
 pub trait Individual {
