@@ -1,5 +1,7 @@
 use rand::seq::SliceRandom;
 
+pub struct GeneticAlgorithm;
+
 pub struct RouletteWheelSelection;
 
 pub trait Individual {
@@ -10,6 +12,28 @@ pub trait SelectionMethod {
     fn select<'a, I>(&self, rng: &mut dyn rand::RngCore, population: &'a [I]) -> &'a I
     where
         I: Individual;
+}
+
+impl GeneticAlgorithm {
+    pub fn new() -> GeneticAlgorithm {
+        GeneticAlgorithm
+    }
+
+    pub fn step<I>(&self, population: &[I]) -> Vec<I>
+    where
+        I: Individual,
+    {
+        assert!(!population.is_empty());
+
+        (0..population.len())
+            .map(|_| {
+                // TODO selection
+                // TODO crossover
+                // TODO mutation
+                todo!()
+            })
+            .collect()
+    }
 }
 
 impl RouletteWheelSelection {
