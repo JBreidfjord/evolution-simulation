@@ -1,6 +1,8 @@
 use rand::seq::SliceRandom;
 
-pub struct GeneticAlgorithm;
+pub struct GeneticAlgorithm<S> {
+    selection_method: S,
+}
 
 pub struct RouletteWheelSelection;
 
@@ -14,12 +16,15 @@ pub trait SelectionMethod {
         I: Individual;
 }
 
-impl GeneticAlgorithm {
-    pub fn new() -> GeneticAlgorithm {
-        GeneticAlgorithm
+impl<S> GeneticAlgorithm<S>
+where
+    S: SelectionMethod,
+{
+    pub fn new(selection_method: S) -> GeneticAlgorithm<S> {
+        GeneticAlgorithm { selection_method }
     }
 
-    pub fn step<I>(&self, population: &[I]) -> Vec<I>
+    pub fn step<I>(&self, rng: &mut dyn rand::RngCore, population: &[I]) -> Vec<I>
     where
         I: Individual,
     {
@@ -27,7 +32,8 @@ impl GeneticAlgorithm {
 
         (0..population.len())
             .map(|_| {
-                // TODO selection
+                let parent_a = self.selection_method.select(rng, population);
+                let parent_b = self.selection_method.select(rng, population);
                 // TODO crossover
                 // TODO mutation
                 todo!()
