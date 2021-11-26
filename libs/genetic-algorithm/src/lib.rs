@@ -8,11 +8,19 @@ use std::ops::Index;
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
     crossover_method: Box<dyn CrossoverMethod>,
+    mutation_method: Box<dyn MutationMethod>,
 }
 
 pub struct RouletteWheelSelection;
 
 pub struct UniformCrossover;
+
+pub struct GaussianMutation {
+    // Probability of changing a gene
+    rate: f32,
+    // Magnitude of change
+    factor: f32,
+}
 
 #[derive(Clone, Debug)]
 pub struct Chromosome {
@@ -39,6 +47,10 @@ pub trait CrossoverMethod {
     ) -> Chromosome;
 }
 
+pub trait MutationMethod {
+    fn mutate(&self, rng: &mut dyn rand::RngCore, child: &mut Chromosome);
+}
+
 impl<S> GeneticAlgorithm<S>
 where
     S: SelectionMethod,
@@ -46,10 +58,12 @@ where
     pub fn new(
         selection_method: S,
         crossover_method: impl CrossoverMethod + 'static,
+        mutation_method: impl MutationMethod + 'static,
     ) -> GeneticAlgorithm<S> {
         GeneticAlgorithm {
             selection_method,
             crossover_method: Box::new(crossover_method),
+            mutation_method: Box::new(mutation_method),
         }
     }
 
@@ -68,7 +82,10 @@ where
                 // Crossover
                 let mut child = self.crossover_method.crossover(rng, parent_a, parent_b);
 
-                // TODO mutation
+                // Mutation
+                self.mutation_method.mutate(rng, &mut child);
+
+                // TODO convert Chromosome to Individual
                 todo!()
             })
             .collect()
@@ -114,6 +131,26 @@ impl CrossoverMethod for UniformCrossover {
             .zip(parent_b)
             .map(|(&a, &b)| if rng.gen_bool(0.5) { a } else { b })
             .collect()
+    }
+}
+
+impl GaussianMutation {
+    pub fn new(rate: f32, factor: f32) -> GaussianMutation {
+        assert!(rate >= 0.0 && rate <= 1.0);
+
+        GaussianMutation { rate, factor }
+    }
+}
+
+impl MutationMethod for GaussianMutation {
+    fn mutate(&self, rng: &mut dyn rand::RngCore, child: &mut Chromosome) {
+        for gene in child.iter_mut() {
+            let sign = if rng.gen_bool(0.5) { -1.0 } else { 1.0 };
+
+            if rng.gen_bool(self.rate as _) {
+                *gene += sign * self.factor * rng.gen::<f32>();
+            }
+        }
     }
 }
 
