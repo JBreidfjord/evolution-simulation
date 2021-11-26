@@ -240,6 +240,51 @@ impl Individual for TestIndividual {
 mod tests {
     use super::*;
 
+    mod geneticalgorithm {
+        use super::*;
+        use rand::SeedableRng;
+        use rand_chacha::ChaCha8Rng;
+
+        fn individual(genes: &[f32]) -> TestIndividual {
+            let chromosome = genes.iter().cloned().collect();
+
+            TestIndividual::create(chromosome)
+        }
+
+        #[test]
+        fn test() {
+            let mut rng = ChaCha8Rng::from_seed(Default::default());
+
+            let ga = GeneticAlgorithm::new(
+                RouletteWheelSelection::new(),
+                UniformCrossover::new(),
+                GaussianMutation::new(0.25, 1.0),
+            );
+
+            let mut population = vec![
+                individual(&[0.0, 0.0, 0.0]), // fitness = 0.0
+                individual(&[1.0, 1.0, 1.0]), // fitness = 3.0
+                individual(&[2.0, 2.0, 2.0]), // fitness = 6.0
+                individual(&[3.0, 3.0, 3.0]), // fitness = 9.0
+                individual(&[4.0, 4.0, 4.0]), // fitness = 12.0
+            ];
+
+            for _ in 0..5 {
+                population = ga.step(&mut rng, &population);
+            }
+
+            let expected_population = vec![
+                individual(&[2.2071722, 1.443665, 4.9321785]),
+                individual(&[2.0, 3.0, 3.3834975]),
+                individual(&[2.0, 3.0, 2.5290549]),
+                individual(&[2.2071722, 3.5167656, 3.3899784]),
+                individual(&[2.0, 3.0, 2.8409562]),
+            ];
+
+            assert_eq!(population, expected_population);
+        }
+    }
+
     mod selection {
         use super::*;
 
