@@ -1,14 +1,18 @@
 #![feature(type_alias_impl_trait)]
 
 use rand::seq::SliceRandom;
+use rand::Rng;
 use std::iter::FromIterator;
 use std::ops::Index;
 
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
+    crossover_method: Box<dyn CrossoverMethod>,
 }
 
 pub struct RouletteWheelSelection;
+
+pub struct UniformCrossover;
 
 #[derive(Clone, Debug)]
 pub struct Chromosome {
@@ -26,12 +30,27 @@ pub trait SelectionMethod {
         I: Individual;
 }
 
+pub trait CrossoverMethod {
+    fn crossover(
+        &self,
+        rng: &mut dyn rand::RngCore,
+        parent_a: &Chromosome,
+        parent_b: &Chromosome,
+    ) -> Chromosome;
+}
+
 impl<S> GeneticAlgorithm<S>
 where
     S: SelectionMethod,
 {
-    pub fn new(selection_method: S) -> GeneticAlgorithm<S> {
-        GeneticAlgorithm { selection_method }
+    pub fn new(
+        selection_method: S,
+        crossover_method: impl CrossoverMethod + 'static,
+    ) -> GeneticAlgorithm<S> {
+        GeneticAlgorithm {
+            selection_method,
+            crossover_method: Box::new(crossover_method),
+        }
     }
 
     pub fn step<I>(&self, rng: &mut dyn rand::RngCore, population: &[I]) -> Vec<I>
@@ -42,9 +61,13 @@ where
 
         (0..population.len())
             .map(|_| {
+                // Selection
                 let parent_a = self.selection_method.select(rng, population).chromosome();
                 let parent_b = self.selection_method.select(rng, population).chromosome();
-                // TODO crossover
+
+                // Crossover
+                let mut child = self.crossover_method.crossover(rng, parent_a, parent_b);
+
                 // TODO mutation
                 todo!()
             })
@@ -66,6 +89,31 @@ impl SelectionMethod for RouletteWheelSelection {
         population
             .choose_weighted(rng, |i| i.fitness())
             .expect("Received empty population")
+    }
+}
+
+impl UniformCrossover {
+    pub fn new() -> UniformCrossover {
+        UniformCrossover
+    }
+}
+
+impl CrossoverMethod for UniformCrossover {
+    fn crossover(
+        &self,
+        rng: &mut dyn rand::RngCore,
+        parent_a: &Chromosome,
+        parent_b: &Chromosome,
+    ) -> Chromosome {
+        assert_eq!(parent_a.len(), parent_b.len());
+
+        let parent_a = parent_a.iter();
+        let parent_b = parent_b.iter();
+
+        parent_a
+            .zip(parent_b)
+            .map(|(&a, &b)| if rng.gen_bool(0.5) { a } else { b })
+            .collect()
     }
 }
 
