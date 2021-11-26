@@ -30,6 +30,7 @@ pub struct Chromosome {
 pub trait Individual {
     fn fitness(&self) -> f32;
     fn chromosome(&self) -> &Chromosome;
+    fn create(chromosome: Chromosome) -> Self;
 }
 
 pub trait SelectionMethod {
@@ -85,8 +86,7 @@ where
                 // Mutation
                 self.mutation_method.mutate(rng, &mut child);
 
-                // TODO convert Chromosome to Individual
-                todo!()
+                I::create(child)
             })
             .collect()
     }
@@ -193,27 +193,46 @@ impl IntoIterator for Chromosome {
     }
 }
 
+impl PartialEq for Chromosome {
+    fn eq(&self, other: &Self) -> bool {
+        approx::relative_eq!(self.genes.as_slice(), other.genes.as_slice())
+    }
+}
+
 #[cfg(test)]
-#[derive(Clone, Debug)]
-pub struct TestIndividual {
-    fitness: f32,
+#[derive(Clone, Debug, PartialEq)]
+pub enum TestIndividual {
+    WithChromosome { chromosome: Chromosome },
+    WithFitness { fitness: f32 },
 }
 
 #[cfg(test)]
 impl TestIndividual {
     pub fn new(fitness: f32) -> TestIndividual {
-        TestIndividual { fitness }
+        Self::WithFitness { fitness }
     }
 }
 
 #[cfg(test)]
 impl Individual for TestIndividual {
     fn fitness(&self) -> f32 {
-        self.fitness
+        match self {
+            Self::WithChromosome { chromosome } => chromosome.iter().sum(),
+            Self::WithFitness { fitness } => *fitness,
+        }
     }
 
     fn chromosome(&self) -> &Chromosome {
-        panic!("Not supported for TestIndividual")
+        match self {
+            Self::WithChromosome { chromosome } => chromosome,
+            Self::WithFitness { .. } => {
+                panic!("Not supported for TestIndividual::WithFitness")
+            }
+        }
+    }
+
+    fn create(chromosome: Chromosome) -> Self {
+        Self::WithChromosome { chromosome }
     }
 }
 
