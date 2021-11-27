@@ -12,6 +12,7 @@ pub struct Simulation {
 #[derive(Debug, Clone, Serialize)]
 pub struct World {
     pub creatures: Vec<Creature>,
+    pub foods: Vec<Food>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -19,6 +20,12 @@ pub struct Creature {
     pub x: f32,
     pub y: f32,
     pub rotation: f32,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Food {
+    pub x: f32,
+    pub y: f32,
 }
 
 #[wasm_bindgen]
@@ -44,8 +51,9 @@ impl Simulation {
 impl From<&sim::World> for World {
     fn from(world: &sim::World) -> World {
         let creatures = world.creatures().iter().map(Creature::from).collect();
+        let foods = world.foods().iter().map(Food::from).collect();
 
-        World { creatures }
+        World { creatures, foods }
     }
 }
 
@@ -55,6 +63,15 @@ impl From<&sim::Creature> for Creature {
             x: creature.position().x,
             y: creature.position().y,
             rotation: creature.rotation().angle(),
+        }
+    }
+}
+
+impl From<&sim::Food> for Food {
+    fn from(food: &sim::Food) -> Food {
+        Food {
+            x: food.position().x,
+            y: food.position().y,
         }
     }
 }

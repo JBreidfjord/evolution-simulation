@@ -5,7 +5,13 @@ function redraw() {
 
   simulation.step();
 
-  for (const creature of simulation.world().creatures) {
+  const world = simulation.world();
+
+  for (const food of world.foods) {
+    ctx.drawCircle(food.x * width, food.y * height, (0.01 / 2.0) * width);
+  }
+
+  for (const creature of world.creatures) {
     ctx.drawTriangle(
       creature.x * width,
       creature.y * height,
@@ -45,8 +51,15 @@ CanvasRenderingContext2D.prototype.drawTriangle = function (
   this.fill();
 };
 
+CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
+  this.beginPath();
+  this.arc(x, y, radius, 0, 2 * Math.PI);
+
+  this.fillStyle = "rgb(100, 190, 100)";
+  this.fill();
+};
+
 const simulation = new sim.Simulation();
-const world = simulation.world();
 
 console.log(simulation.world().creatures);
 
@@ -61,7 +74,5 @@ viewport.style.height = height + "px";
 
 const ctx = viewport.getContext("2d");
 ctx.scale(viewportScale, viewportScale);
-
-ctx.fillStyle = "rgb(0, 0, 0)";
 
 redraw();
