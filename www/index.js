@@ -1,5 +1,22 @@
 import * as sim from "lib-simulation-wasm";
 
+function redraw() {
+  ctx.clearRect(0, 0, width, height);
+
+  simulation.step();
+
+  for (const creature of simulation.world().creatures) {
+    ctx.drawTriangle(
+      creature.x * width,
+      creature.y * height,
+      0.01 * width,
+      creature.rotation
+    );
+  }
+
+  requestAnimationFrame(redraw);
+}
+
 CanvasRenderingContext2D.prototype.drawTriangle = function (
   x,
   y,
@@ -46,11 +63,5 @@ const ctx = viewport.getContext("2d");
 ctx.scale(viewportScale, viewportScale);
 
 ctx.fillStyle = "rgb(0, 0, 0)";
-for (const creature of simulation.world().creatures) {
-  ctx.drawTriangle(
-    creature.x * width,
-    creature.y * height,
-    0.01 * width,
-    creature.rotation
-  );
-}
+
+redraw();

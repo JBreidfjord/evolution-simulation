@@ -1,6 +1,5 @@
 use nalgebra as na;
-use rand::Rng;
-use rand::RngCore;
+use rand::{Rng, RngCore};
 
 pub struct Simulation {
     world: World,
@@ -34,6 +33,15 @@ impl Simulation {
 
     pub fn world(&self) -> &World {
         &self.world
+    }
+
+    pub fn step(&mut self) {
+        for creature in &mut self.world.creatures {
+            creature.position += creature.rotation * na::Vector2::new(creature.speed, 0.0);
+
+            creature.position.x = na::wrap(creature.position.x, 0.0, 1.0);
+            creature.position.y = na::wrap(creature.position.y, 0.0, 1.0);
+        }
     }
 }
 
