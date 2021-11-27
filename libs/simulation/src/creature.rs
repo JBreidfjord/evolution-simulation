@@ -30,6 +30,18 @@ impl Creature {
         }
     }
 
+    crate fn as_chromosome(&self) -> ga::Chromosome {
+        // Could add more encoding here for things like size or colour
+        self.brain.as_chromosome()
+    }
+
+    crate fn from_chromosome(chromosome: ga::Chromosome, rng: &mut dyn RngCore) -> Creature {
+        let eye = Eye::default();
+        let brain = Brain::from_chromosome(chromosome, &eye);
+
+        Creature::new(eye, brain, rng)
+    }
+
     pub fn position(&self) -> na::Point2<f32> {
         self.position
     }
