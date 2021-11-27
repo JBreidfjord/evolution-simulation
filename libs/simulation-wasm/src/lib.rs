@@ -1,7 +1,8 @@
-use lib_simulation as sim;
 use rand::prelude::*;
 use serde::Serialize;
 use wasm_bindgen::prelude::*;
+
+use lib_simulation as sim;
 
 #[wasm_bindgen]
 pub struct Simulation {

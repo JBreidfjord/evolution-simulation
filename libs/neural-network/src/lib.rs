@@ -1,11 +1,16 @@
 use rand::Rng;
 
+#[derive(Debug)]
 pub struct Network {
     layers: Vec<Layer>,
 }
+
+#[derive(Debug)]
 struct Layer {
     neurons: Vec<Neuron>,
 }
+
+#[derive(Debug)]
 struct Neuron {
     weights: Vec<f32>,
     bias: f32,
@@ -16,7 +21,7 @@ pub struct LayerTopology {
 }
 
 impl Network {
-    pub fn random(rng: &mut dyn rand::RngCore, layers: &Vec<LayerTopology>) -> Network {
+    pub fn random(rng: &mut dyn rand::RngCore, layers: &[LayerTopology]) -> Network {
         assert!(layers.len() > 1);
 
         let layers = layers
