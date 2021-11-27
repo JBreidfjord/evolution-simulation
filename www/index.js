@@ -47,7 +47,7 @@ CanvasRenderingContext2D.prototype.drawTriangle = function (
     y + Math.sin(rotation) * size * 1.5
   );
 
-  this.fillStyle = "rgb(0, 0, 0)";
+  this.fillStyle = "rgb(150, 120, 50)";
   this.fill();
 };
 
