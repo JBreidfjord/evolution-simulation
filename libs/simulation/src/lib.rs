@@ -3,9 +3,10 @@
 use nalgebra as na;
 use rand::{Rng, RngCore};
 
-pub use self::{creature::*, food::*, world::*};
+pub use self::{creature::*, eye::*, food::*, world::*};
 
 mod creature;
+mod eye;
 mod food;
 mod world;
 
