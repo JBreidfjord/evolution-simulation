@@ -6,8 +6,9 @@ use std::f32::consts::FRAC_PI_2;
 
 use lib_neural_network as nn;
 
-pub use self::{creature::*, eye::*, food::*, world::*};
+pub use self::{brain::*, creature::*, eye::*, food::*, world::*};
 
+mod brain;
 mod creature;
 mod eye;
 mod food;

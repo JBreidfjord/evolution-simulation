@@ -37,6 +37,35 @@ impl Network {
             .iter()
             .fold(inputs, |inputs, layer| layer.propagate(inputs))
     }
+
+    pub fn weights(&self) -> impl Iterator<Item = f32> + '_ {
+        use std::iter::once;
+
+        self.layers
+            .iter()
+            .flat_map(|layer| layer.neurons.iter())
+            .flat_map(|neuron| once(&neuron.bias).chain(&neuron.weights))
+            .cloned()
+    }
+
+    pub fn from_weights(
+        layers: &[LayerTopology],
+        weights: impl IntoIterator<Item = f32>,
+    ) -> Network {
+        assert!(layers.len() > 1);
+
+        let mut weights = weights.into_iter();
+        let layers = layers
+            .windows(2)
+            .map(|layers| Layer::from_weights(layers[0].neurons, layers[1].neurons, &mut weights))
+            .collect();
+
+        if weights.next().is_some() {
+            panic!("Too many weights!");
+        }
+
+        Network { layers }
+    }
 }
 
 impl Layer {
@@ -57,6 +86,18 @@ impl Layer {
             .iter()
             .map(|neuron| neuron.propagate(&inputs))
             .collect()
+    }
+
+    pub fn from_weights(
+        input_size: usize,
+        output_size: usize,
+        weights: &mut dyn Iterator<Item = f32>,
+    ) -> Layer {
+        let neurons = (0..output_size)
+            .map(|_| Neuron::from_weights(input_size, weights))
+            .collect();
+
+        Layer { neurons }
     }
 }
 
@@ -79,6 +120,15 @@ impl Neuron {
             .sum::<f32>();
 
         (sum + self.bias).max(0.0)
+    }
+
+    pub fn from_weights(output_neurons: usize, weights: &mut dyn Iterator<Item = f32>) -> Neuron {
+        let bias = weights.next().expect("Not enough weights!");
+        let weights = (0..output_neurons)
+            .map(|_| weights.next().expect("Not enough weights!"))
+            .collect();
+
+        Neuron { weights, bias }
     }
 }
 
@@ -248,6 +298,21 @@ mod tests {
 
                 let prop = network.propagate(vec![0.3, 0.6]);
                 assert_relative_eq!(prop.as_slice(), [0.84375, 1.2375].as_ref());
+            }
+        }
+
+        mod from_weights {
+            use super::*;
+            use approx::assert_relative_eq;
+
+            #[test]
+            fn test() {
+                let layers = &[LayerTopology { neurons: 3 }, LayerTopology { neurons: 2 }];
+                let weights = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+                let network = Network::from_weights(layers, weights.clone());
+                let actual: Vec<_> = network.weights().collect();
+
+                assert_relative_eq!(actual.as_slice(), weights.as_slice());
             }
         }
     }
