@@ -18,6 +18,7 @@ pub struct World {
 pub struct Creature {
     pub x: f32,
     pub y: f32,
+    pub rotation: f32,
 }
 
 #[wasm_bindgen]
@@ -49,6 +50,7 @@ impl From<&sim::Creature> for Creature {
         Creature {
             x: creature.position().x,
             y: creature.position().y,
+            rotation: creature.rotation().angle(),
         }
     }
 }
