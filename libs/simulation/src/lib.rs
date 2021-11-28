@@ -46,7 +46,7 @@ impl Simulation {
         &self.world
     }
 
-    pub fn step(&mut self, rng: &mut dyn RngCore) {
+    pub fn step(&mut self, rng: &mut dyn RngCore) -> bool {
         self.process_collisions(rng);
         self.process_brains();
         self.process_movement();
@@ -55,6 +55,9 @@ impl Simulation {
 
         if self.age > GENERATION_LENGTH {
             self.evolve(rng);
+            true
+        } else {
+            false
         }
     }
 
@@ -120,6 +123,15 @@ impl Simulation {
         // Reset food positions
         for food in &mut self.world.foods {
             food.position = rng.gen();
+        }
+    }
+
+    /// Step until end of current generation
+    pub fn train(&mut self, rng: &mut dyn RngCore) {
+        loop {
+            if self.step(rng) {
+                return;
+            }
         }
     }
 }

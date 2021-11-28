@@ -59,6 +59,10 @@ CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
   this.fill();
 };
 
+document.getElementById("train").onclick = function () {
+  simulation.train();
+};
+
 const simulation = new sim.Simulation();
 
 console.log(simulation.world().creatures);
