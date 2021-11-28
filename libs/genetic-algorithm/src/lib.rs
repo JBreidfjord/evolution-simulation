@@ -27,6 +27,13 @@ pub struct Chromosome {
     genes: Vec<f32>,
 }
 
+#[derive(Debug, Clone)]
+pub struct Statistics {
+    min_fitness: f32,
+    max_fitness: f32,
+    avg_fitness: f32,
+}
+
 pub trait Individual {
     fn fitness(&self) -> f32;
     fn chromosome(&self) -> &Chromosome;
@@ -68,13 +75,13 @@ where
         }
     }
 
-    pub fn step<I>(&self, rng: &mut dyn rand::RngCore, population: &[I]) -> Vec<I>
+    pub fn step<I>(&self, rng: &mut dyn rand::RngCore, population: &[I]) -> (Vec<I>, Statistics)
     where
         I: Individual,
     {
         assert!(!population.is_empty());
 
-        (0..population.len())
+        let new_population = (0..population.len())
             .map(|_| {
                 // Selection
                 let parent_a = self.selection_method.select(rng, population).chromosome();
@@ -88,7 +95,11 @@ where
 
                 I::create(child)
             })
-            .collect()
+            .collect();
+
+        let stats = Statistics::new(population);
+
+        (new_population, stats)
     }
 }
 
@@ -199,6 +210,45 @@ impl PartialEq for Chromosome {
     }
 }
 
+impl Statistics {
+    fn new<I>(population: &[I]) -> Statistics
+    where
+        I: Individual,
+    {
+        assert!(!population.is_empty());
+
+        let mut min_fitness = population[0].fitness();
+        let mut max_fitness = min_fitness;
+        let mut sum_fitness = 0.0;
+
+        for individual in population {
+            let fitness = individual.fitness();
+
+            min_fitness = min_fitness.min(fitness);
+            max_fitness = max_fitness.max(fitness);
+            sum_fitness += fitness;
+        }
+
+        Statistics {
+            min_fitness,
+            max_fitness,
+            avg_fitness: sum_fitness / (population.len() as f32),
+        }
+    }
+
+    pub fn min_fitness(&self) -> f32 {
+        self.min_fitness
+    }
+
+    pub fn max_fitness(&self) -> f32 {
+        self.max_fitness
+    }
+
+    pub fn avg_fitness(&self) -> f32 {
+        self.avg_fitness
+    }
+}
+
 #[cfg(test)]
 #[derive(Clone, Debug, PartialEq)]
 pub enum TestIndividual {
@@ -270,7 +320,7 @@ mod tests {
             ];
 
             for _ in 0..5 {
-                population = ga.step(&mut rng, &population);
+                population = ga.step(&mut rng, &population).0;
             }
 
             let expected_population = vec![
