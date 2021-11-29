@@ -6,8 +6,52 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <canvas id="viewport" width="600" height="600"></canvas>
-    <button id="train">Train</button>
+    <div class="container">
+      <div>
+        <h1 class="text-glow">
+          <span class="text-gradient">speedy birbs mk 1</span>
+        </h1>
+        <div class="control">
+          <label for="sim-speed" class="slider-label text-gradient text-glow"
+            >Simulation Speed <span id="sim-speed-value">1</span>x</label
+          >
+          <input type="range" min="1" max="9" value="1" class="slider btn" id="sim-speed" />
+        </div>
+        <div class="control">
+          <button class="btn control" id="train">Train</button>
+          <p id="train-stats"></p>
+        </div>
+      </div>
+      <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div>
+        <table id="stats">
+          <thead>
+            <tr>
+              <th colspan="0">Birbs</th>
+            </tr>
+            <tr>
+              <th>Fitness</th>
+              <th>x</th>
+              <th>y</th>
+            </tr>
+          </thead>
+          <tbody id="stats-body"></tbody>
+          <tfoot>
+            <tr>
+              <td>min: <span id="fitness-min"></span></td>
+            </tr>
+            <tr>
+              <td>max: <span id="fitness-max"></span></td>
+            </tr>
+            <tr>
+              <td>avg: <span id="fitness-avg"></span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
     <script src="./bootstrap.js"></script>
   </body>
 </html>

@@ -49,4 +49,8 @@ impl Creature {
     pub fn rotation(&self) -> na::Rotation2<f32> {
         self.rotation
     }
+
+    pub fn fitness(&self) -> f32 {
+        self.satiation as f32
+    }
 }

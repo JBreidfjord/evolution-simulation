@@ -21,6 +21,7 @@ pub struct Creature {
     pub x: f32,
     pub y: f32,
     pub rotation: f32,
+    pub fitness: f32,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -52,7 +53,7 @@ impl Simulation {
         let stats = self.sim.train(&mut self.rng);
 
         format!(
-            "min={:.2}, max={:.2}, avg={:.2}",
+            "min: {:.2}\nmax: {:.2}\navg: {:.2}",
             stats.min_fitness(),
             stats.max_fitness(),
             stats.avg_fitness()
@@ -75,6 +76,7 @@ impl From<&sim::Creature> for Creature {
             x: creature.position().x,
             y: creature.position().y,
             rotation: creature.rotation().angle(),
+            fitness: creature.fitness(),
         }
     }
 }
