@@ -17,12 +17,20 @@ mod eye;
 mod food;
 mod world;
 
+const POPULATION_SIZE: usize = 40; // Number of Individuals in the population
+const FOOD_SIZE: usize = 40; // Number of food in the world
+
 const GENERATION_LENGTH: usize = 2500; // Steps before evolution
 
 const SPEED_MIN: f32 = 0.001; // Minimum Creature speed
 const SPEED_MAX: f32 = 0.005; // Maximum Creature speed
 const SPEED_ACCEL: f32 = 0.2; // Change in speed per update
 const ROTATION_ACCEL: f32 = FRAC_PI_2; // Change in rotation per update
+
+const UPPER_BOUND_X: f32 = 1.0; // Upper bound for Creature position
+const UPPER_BOUND_Y: f32 = 1.0; // Upper bound for Creature position
+const LOWER_BOUND_X: f32 = 0.0; // Lower bound for Creature position
+const LOWER_BOUND_Y: f32 = 0.0; // Lower bound for Creature position
 
 pub struct Simulation {
     world: World,
@@ -32,7 +40,7 @@ pub struct Simulation {
 
 impl Simulation {
     pub fn random(rng: &mut dyn RngCore) -> Simulation {
-        let world = World::random(rng);
+        let world = World::random(rng, POPULATION_SIZE, FOOD_SIZE);
         let ga = ga::GeneticAlgorithm::new(
             ga::RouletteWheelSelection::new(),
             ga::UniformCrossover::new(),
@@ -94,8 +102,8 @@ impl Simulation {
         for creature in &mut self.world.creatures {
             creature.position += creature.rotation * na::Vector2::new(creature.speed, 0.0);
 
-            creature.position.x = na::wrap(creature.position.x, 0.0, 1.0);
-            creature.position.y = na::wrap(creature.position.y, 0.0, 1.0);
+            creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
+            creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
         }
     }
 
