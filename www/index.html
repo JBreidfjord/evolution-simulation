@@ -6,47 +6,65 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <div class="container">
-      <div>
-        <h1 class="text-glow">
+    <div class="grid">
+      <div id="left" class="grid-item">
+        <h1 id="title" class="text-glow">
           <span class="text-gradient">speedy birbs mk 1</span>
         </h1>
-        <div class="control">
-          <label for="sim-speed" class="slider-label text-gradient text-glow"
-            >Simulation Speed <span id="sim-speed-value">1</span>x</label
-          >
-          <input type="range" min="1" max="9" value="1" class="slider btn" id="sim-speed" />
+        <div id="gen-stats">
+          <h3>Generation <span id="gen-count">0</span></h3>
+          <table id="gen-stats-table" hidden>
+            <thead>
+              <tr>
+                <th colspan="4">Prev Gens</th>
+              </tr>
+              <tr>
+                <th>Gen</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Avg</th>
+              </tr>
+            </thead>
+            <tbody id="gen-stats-body"></tbody>
+          </table>
         </div>
-        <div class="control">
+        <div id="control-container">
+          <div class="control">
+            <label for="sim-speed" class="slider-label"
+              >Simulation Speed <span id="sim-speed-value">1</span>x</label
+            >
+            <input type="range" min="1" max="10" value="1" class="slider btn" id="sim-speed" />
+          </div>
           <button class="btn control" id="train">Train</button>
-          <p id="train-stats"></p>
         </div>
       </div>
-      <div id="canvas-container">
+      <div id="canvas-container" class="grid-item">
         <canvas id="canvas"></canvas>
       </div>
-      <div>
+      <div class="grid-item">
         <table id="stats">
           <thead>
             <tr>
-              <th colspan="0">Birbs</th>
+              <th colspan="5">Birbs</th>
             </tr>
             <tr>
+              <th></th>
+              <th>ID</th>
               <th>Fitness</th>
-              <th>x</th>
-              <th>y</th>
+              <!-- <th>x</th>
+              <th>y</th> -->
             </tr>
           </thead>
           <tbody id="stats-body"></tbody>
           <tfoot>
             <tr>
-              <td>min: <span id="fitness-min"></span></td>
+              <th colspan="5">min: <span id="fitness-min"></span></th>
             </tr>
             <tr>
-              <td>max: <span id="fitness-max"></span></td>
+              <th colspan="5">max: <span id="fitness-max"></span></th>
             </tr>
             <tr>
-              <td>avg: <span id="fitness-avg"></span></td>
+              <th colspan="5">avg: <span id="fitness-avg"></span></th>
             </tr>
           </tfoot>
         </table>

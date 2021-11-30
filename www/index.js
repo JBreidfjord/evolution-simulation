@@ -31,7 +31,9 @@ function redraw() {
   ctx.clearRect(0, 0, width, height);
 
   for (let i = 0; i < simSpeed; i++) {
-    simulation.step();
+    if (simulation.step()) {
+      updateGeneration();
+    }
   }
 
   const world = simulation.world();
@@ -51,32 +53,103 @@ function redraw() {
     );
   }
 
-  updateStats();
+  let highlightedCreatures = updateStats();
+  drawHighlights(ctx, width, height, highlightedCreatures);
 
   requestAnimationFrame(redraw);
 }
 
-function updateStats() {
+function createStats() {
   const world = simulation.world();
+
   const table = document.getElementById("stats");
   let old_tbody = table.childNodes[2];
   let new_tbody = document.createElement("tbody");
+  new_tbody.id = "stats-body";
+
+  world.creatures.sort((a, b) => b.fitness - a.fitness);
 
   for (const creature of world.creatures) {
     let row = new_tbody.insertRow();
+
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.id = creature.id;
+
+    row.insertCell().appendChild(input);
+    row.insertCell().innerText = creature.id;
     row.insertCell().innerText = creature.fitness;
-    row.insertCell().innerText = creature.x.toFixed(2);
-    row.insertCell().innerText = creature.y.toFixed(2);
+    // row.insertCell().innerText = creature.x.toFixed(2);
+    // row.insertCell().innerText = creature.y.toFixed(2);
   }
 
   old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
+}
+
+function updateStats() {
+  const world = simulation.world();
+
+  let highlightedCreatures = [];
+
+  const tbody = document.getElementById("stats-body");
+  let rows = tbody.childNodes;
+  world.creatures.sort((a, b) => a.id - b.id);
+  rows.forEach((row, i) => {
+    let cols = row.childNodes;
+    if (cols[0].childNodes[0].checked) {
+      highlightedCreatures.push(world.creatures[i].id);
+    }
+    cols[1].innerText = world.creatures[i].id;
+    cols[2].innerText = world.creatures[i].fitness;
+    // cols[3].innerText = world.creatures[i].x.toFixed(2);
+    // cols[4].innerText = world.creatures[i].y.toFixed(2);
+  });
 
   let creatureFitness = world.creatures.map((creature) => creature.fitness);
   document.getElementById("fitness-min").innerText = Math.min(...creatureFitness);
   document.getElementById("fitness-max").innerText = Math.max(...creatureFitness);
   document.getElementById("fitness-avg").innerText = (
     creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length
-  ).toFixed(2);
+  ).toPrecision(3);
+
+  return highlightedCreatures;
+}
+
+function updateGeneration(minFitness = null, maxFitness = null, avgFitness = null) {
+  document.getElementById("gen-stats-table").removeAttribute("hidden");
+
+  if (minFitness === null) {
+    minFitness = parseFloat(document.getElementById("fitness-min").innerText);
+  }
+  if (maxFitness === null) {
+    maxFitness = parseFloat(document.getElementById("fitness-max").innerText);
+  }
+  if (avgFitness === null) {
+    avgFitness = parseFloat(document.getElementById("fitness-avg").innerText);
+  }
+
+  document.getElementById("gen-count").innerText = simulation.generation;
+
+  let tbody = document.getElementById("gen-stats-body");
+  let row = tbody.insertRow(0);
+  row.insertCell().innerText = simulation.generation - 1;
+  row.insertCell().innerText = minFitness;
+  row.insertCell().innerText = maxFitness;
+  row.insertCell().innerText = avgFitness.toPrecision(3);
+
+  if (tbody.childElementCount > 5) {
+    tbody.removeChild(tbody.lastChild);
+  }
+}
+
+function drawHighlights(ctx, width, height, highlightedCreatures) {
+  const world = simulation.world();
+
+  for (const creature of world.creatures) {
+    if (highlightedCreatures.includes(creature.id)) {
+      ctx.drawHighlight(creature.x * width, creature.y * height, 0.05 * width, creature.rotation);
+    }
+  }
 }
 
 CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation, fitness) {
@@ -104,8 +177,18 @@ CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
   this.fill();
 };
 
+CanvasRenderingContext2D.prototype.drawHighlight = function (x, y, radius, rotation) {
+  this.beginPath();
+  let arc = ((5 / 4) * Math.PI) / 2;
+  this.arc(x, y, radius, rotation, rotation + arc);
+  this.arc(x, y, radius, rotation, rotation - arc, true);
+
+  this.fillStyle = "rgba(255, 255, 255, 0.1)";
+  this.fill();
+};
+
 document.getElementById("train").onclick = function () {
-  document.getElementById("train-stats").innerText = simulation.train();
+  updateGeneration(...simulation.train());
 };
 
 document.getElementById("sim-speed").oninput = function () {
@@ -116,4 +199,5 @@ document.getElementById("sim-speed").oninput = function () {
 const simulation = new sim.Simulation();
 let simSpeed = 1;
 
+createStats();
 redraw();
