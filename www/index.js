@@ -112,6 +112,13 @@ function updateStats() {
     creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length
   ).toPrecision(3);
 
+  let bestCreature = world.creatures.find(
+    (creature) => creature.fitness === Math.max(...creatureFitness)
+  );
+  if (!highlightedCreatures.includes(bestCreature.id)) {
+    highlightedCreatures.push(bestCreature.id);
+  }
+
   return highlightedCreatures;
 }
 
