@@ -4,25 +4,28 @@ function setScale() {
   const canvas = document.getElementById("canvas");
   const canvasContainer = document.getElementById("canvas-container");
 
-  const viewportScale = window.devicePixelRatio || 1;
+  // const viewportScale = window.devicePixelRatio || 1;
+  // const viewportScale = 1;
   const { width, height } = canvasContainer.getBoundingClientRect();
-  const displayWidth = Math.round(width * viewportScale);
-  const displayHeight = Math.round(height * viewportScale);
+  // const displayWidth = Math.round(width * viewportScale);
+  // const displayHeight = Math.round(height * viewportScale);
 
   const ctx = canvas.getContext("2d");
 
-  const needResize = canvas.width !== displayWidth || canvas.height !== displayHeight;
+  // const needResize = canvas.width !== displayWidth || canvas.height !== displayHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
 
   if (needResize) {
-    canvas.width = displayWidth;
-    canvas.height = displayHeight;
+    // canvas.width = displayWidth;
+    // canvas.height = displayHeight;
+    canvas.width = width;
+    canvas.height = height;
 
     canvas.style.width = canvas.width + "px";
     canvas.style.height = canvas.height + "px";
-
-    ctx.scale(viewportScale, viewportScale);
   }
 
+  // ctx.scale(viewportScale, viewportScale);
   return [ctx, canvas.width, canvas.height];
 }
 
