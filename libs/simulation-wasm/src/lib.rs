@@ -24,6 +24,8 @@ pub struct Creature {
     pub y: f32,
     pub rotation: f32,
     pub fitness: f32,
+    pub energy: f32,
+    pub alive: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -85,6 +87,8 @@ impl From<&sim::World> for World {
                 y: creature.y,
                 rotation: creature.rotation,
                 fitness: creature.fitness,
+                energy: creature.energy,
+                alive: creature.alive,
             })
             .collect();
         let foods = world.foods().iter().map(Food::from).collect();
@@ -101,6 +105,8 @@ impl From<&sim::Creature> for Creature {
             y: creature.position().y,
             rotation: creature.rotation().angle(),
             fitness: creature.fitness(),
+            energy: creature.energy(),
+            alive: creature.alive(),
         }
     }
 }

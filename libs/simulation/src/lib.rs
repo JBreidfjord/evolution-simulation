@@ -17,8 +17,12 @@ mod eye;
 mod food;
 mod world;
 
-const POPULATION_SIZE: usize = 40; // Number of Individuals in the population
+const POPULATION_SIZE: usize = 20; // Number of Individuals in the population
 const FOOD_SIZE: usize = 40; // Number of food in the world
+
+const STARTING_ENERGY: f32 = 100.0; // Default energy Creature starts with
+const FOOD_ENERGY: f32 = 25.0; // Energy gained from each food
+const ENERGY_LOSS_FACTOR: f32 = 50.0; // Energy lost each tick * Creature speed
 
 const GENERATION_LENGTH: usize = 2500; // Steps before evolution
 
@@ -55,9 +59,9 @@ impl Simulation {
     }
 
     pub fn step(&mut self, rng: &mut dyn RngCore) -> Option<ga::Statistics> {
+        self.process_movement();
         self.process_collisions(rng);
         self.process_brains();
-        self.process_movement();
 
         self.age += 1;
 
@@ -70,10 +74,15 @@ impl Simulation {
 
     fn process_collisions(&mut self, rng: &mut dyn RngCore) {
         for creature in &mut self.world.creatures {
+            if !creature.alive {
+                continue;
+            }
+
             for food in &mut self.world.foods {
                 let distance = na::distance(&creature.position, &food.position);
 
                 if distance <= 0.01 {
+                    creature.energy += FOOD_ENERGY;
                     creature.satiation += 1;
                     food.position = rng.gen();
                 }
@@ -83,6 +92,10 @@ impl Simulation {
 
     fn process_brains(&mut self) {
         for creature in &mut self.world.creatures {
+            if !creature.alive {
+                continue;
+            }
+
             let vision = creature.eye.process_vision(
                 creature.position,
                 creature.rotation,
@@ -100,10 +113,18 @@ impl Simulation {
 
     fn process_movement(&mut self) {
         for creature in &mut self.world.creatures {
+            if !creature.alive {
+                continue;
+            }
+
             creature.position += creature.rotation * na::Vector2::new(creature.speed, 0.0);
 
             creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
             creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
+
+            creature.energy -= ENERGY_LOSS_FACTOR * creature.speed;
+            creature.energy = creature.energy.max(0.0);
+            creature.alive = creature.energy > 0.0;
         }
     }
 
