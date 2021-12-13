@@ -9,20 +9,24 @@
     <div class="grid">
       <div id="left" class="grid-item">
         <h1 id="title" class="text-glow">
-          <span class="text-gradient">speedy birbs mk 1</span>
+          <span class="text-gradient">flying microcosmic societies vol 1</span>
         </h1>
+        <h3 id="subtitle" class="text-glow">
+          explorations into <span class="text-gradient">neuroevolution</span>
+        </h3>
         <div id="gen-stats">
           <h3>Generation <span id="gen-count">0</span></h3>
           <table id="gen-stats-table" hidden>
             <thead>
               <tr>
-                <th colspan="4">Prev Gens</th>
+                <th colspan="5">Prev Gens</th>
               </tr>
               <tr>
                 <th>Gen</th>
                 <th>Min</th>
                 <th>Max</th>
                 <th>Avg</th>
+                <th>Rem</th>
               </tr>
             </thead>
             <tbody id="gen-stats-body"></tbody>
@@ -51,8 +55,7 @@
               <th></th>
               <th>ID</th>
               <th>Fitness</th>
-              <!-- <th>x</th>
-              <th>y</th> -->
+              <th>Energy</th>
             </tr>
           </thead>
           <tbody id="stats-body"></tbody>
@@ -65,6 +68,9 @@
             </tr>
             <tr>
               <th colspan="5">avg: <span id="fitness-avg"></span></th>
+            </tr>
+            <tr>
+              <th colspan="5">remaining: <span id="remaining-pop"></span></th>
             </tr>
           </tfoot>
         </table>

@@ -25,7 +25,7 @@ impl ga::Individual for CreatureIndividual {
 impl CreatureIndividual {
     pub fn from_creature(creature: &Creature) -> CreatureIndividual {
         CreatureIndividual {
-            fitness: creature.satiation as f32,
+            fitness: creature.fitness(),
             chromosome: creature.as_chromosome(),
         }
     }

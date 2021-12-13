@@ -4,20 +4,13 @@ function setScale() {
   const canvas = document.getElementById("canvas");
   const canvasContainer = document.getElementById("canvas-container");
 
-  // const viewportScale = window.devicePixelRatio || 1;
-  // const viewportScale = 1;
   const { width, height } = canvasContainer.getBoundingClientRect();
-  // const displayWidth = Math.round(width * viewportScale);
-  // const displayHeight = Math.round(height * viewportScale);
 
   const ctx = canvas.getContext("2d");
 
-  // const needResize = canvas.width !== displayWidth || canvas.height !== displayHeight;
   const needResize = canvas.width !== width || canvas.height !== height;
 
   if (needResize) {
-    // canvas.width = displayWidth;
-    // canvas.height = displayHeight;
     canvas.width = width;
     canvas.height = height;
 
@@ -25,7 +18,6 @@ function setScale() {
     canvas.style.height = canvas.height + "px";
   }
 
-  // ctx.scale(viewportScale, viewportScale);
   return [ctx, canvas.width, canvas.height];
 }
 
@@ -47,13 +39,15 @@ function redraw() {
   }
 
   for (const creature of world.creatures) {
-    ctx.drawTriangle(
-      creature.x * width,
-      creature.y * height,
-      0.01 * width,
-      creature.rotation,
-      creature.fitness / foodCount
-    );
+    if (creature.alive) {
+      ctx.drawTriangle(
+        creature.x * width,
+        creature.y * height,
+        0.01 * width,
+        creature.rotation,
+        creature.fitness / foodCount
+      );
+    }
   }
 
   let highlightedCreatures = updateStats();
@@ -82,8 +76,7 @@ function createStats() {
     row.insertCell().appendChild(input);
     row.insertCell().innerText = creature.id;
     row.insertCell().innerText = creature.fitness;
-    // row.insertCell().innerText = creature.x.toFixed(2);
-    // row.insertCell().innerText = creature.y.toFixed(2);
+    row.insertCell().innerText = creature.energy.toFixed(2);
   }
 
   old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
@@ -104,8 +97,7 @@ function updateStats() {
     }
     cols[1].innerText = world.creatures[i].id;
     cols[2].innerText = world.creatures[i].fitness;
-    // cols[3].innerText = world.creatures[i].x.toFixed(2);
-    // cols[4].innerText = world.creatures[i].y.toFixed(2);
+    cols[3].innerText = world.creatures[i].energy.toFixed(2);
   });
 
   let creatureFitness = world.creatures.map((creature) => creature.fitness);
@@ -114,6 +106,9 @@ function updateStats() {
   document.getElementById("fitness-avg").innerText = (
     creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length
   ).toPrecision(3);
+  document.getElementById("remaining-pop").innerText = world.creatures.filter(
+    (creature) => creature.alive
+  ).length;
 
   let bestCreature = world.creatures.find(
     (creature) => creature.fitness === Math.max(...creatureFitness)
@@ -125,9 +120,13 @@ function updateStats() {
   return highlightedCreatures;
 }
 
-function updateGeneration(minFitness = null, maxFitness = null, avgFitness = null) {
+function updateGeneration(
+  minFitness = null,
+  maxFitness = null,
+  avgFitness = null,
+  remainingPop = null
+) {
   document.getElementById("gen-stats-table").removeAttribute("hidden");
-
   if (minFitness === null) {
     minFitness = parseFloat(document.getElementById("fitness-min").innerText);
   }
@@ -136,6 +135,9 @@ function updateGeneration(minFitness = null, maxFitness = null, avgFitness = nul
   }
   if (avgFitness === null) {
     avgFitness = parseFloat(document.getElementById("fitness-avg").innerText);
+  }
+  if (remainingPop === null) {
+    remainingPop = parseFloat(document.getElementById("remaining-pop").innerText);
   }
 
   document.getElementById("gen-count").innerText = simulation.generation;
@@ -146,6 +148,7 @@ function updateGeneration(minFitness = null, maxFitness = null, avgFitness = nul
   row.insertCell().innerText = minFitness;
   row.insertCell().innerText = maxFitness;
   row.insertCell().innerText = avgFitness.toPrecision(3);
+  row.insertCell().innerText = remainingPop;
 
   if (tbody.childElementCount > 5) {
     tbody.removeChild(tbody.lastChild);
@@ -198,7 +201,8 @@ CanvasRenderingContext2D.prototype.drawHighlight = function (x, y, radius, rotat
 };
 
 document.getElementById("train").onclick = function () {
-  updateGeneration(...simulation.train());
+  let remainingPop = simulation.world().creatures.filter((creature) => creature.alive).length;
+  updateGeneration(...simulation.train(), remainingPop);
 };
 
 document.getElementById("sim-speed").oninput = function () {

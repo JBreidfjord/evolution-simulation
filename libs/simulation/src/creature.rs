@@ -9,6 +9,8 @@ pub struct Creature {
     crate eye: Eye,
     crate brain: Brain,
     crate satiation: usize,
+    crate energy: f32,
+    crate alive: bool,
 }
 
 impl Creature {
@@ -27,6 +29,8 @@ impl Creature {
             eye,
             brain,
             satiation: 0,
+            energy: STARTING_ENERGY,
+            alive: true,
         }
     }
 
@@ -50,7 +54,19 @@ impl Creature {
         self.rotation
     }
 
+    pub fn energy(&self) -> f32 {
+        self.energy
+    }
+
+    pub fn alive(&self) -> bool {
+        self.alive
+    }
+
     pub fn fitness(&self) -> f32 {
-        self.satiation as f32
+        if !self.alive {
+            0.0
+        } else {
+            self.satiation as f32
+        }
     }
 }
