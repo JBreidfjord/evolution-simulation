@@ -1,6 +1,10 @@
 import "./Controls.css";
 
-export default function Controls({ simSpeed, setSimSpeed }) {
+import { useSim } from "../hooks/useSim";
+
+export default function Controls() {
+  const { simSpeed, setSimSpeed, isPaused, setIsPaused } = useSim();
+
   return (
     <div className="controls">
       <h2>Controls</h2>
@@ -16,6 +20,8 @@ export default function Controls({ simSpeed, setSimSpeed }) {
         />
       </label>
       <p>{simSpeed}x</p>
+
+      <button onClick={() => setIsPaused(!isPaused)}>{isPaused ? "Continue" : "Pause"}</button>
     </div>
   );
 }

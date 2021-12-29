@@ -2,6 +2,8 @@ import "./Canvas.css";
 
 import { useEffect, useRef } from "react";
 
+import { useSim } from "../hooks/useSim";
+
 const getPixelRatio = (ctx) => {
   let backingStore =
     ctx.backingStorePixelRatio ||
@@ -43,7 +45,8 @@ CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
   ctx.fill();
 };
 
-export default function Canvas({ world }) {
+export default function Canvas() {
+  const { world } = useSim();
   const canvasRef = useRef();
 
   useEffect(() => {

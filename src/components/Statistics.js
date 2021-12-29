@@ -2,7 +2,11 @@ import "./Statistics.css";
 
 import { useEffect, useState } from "react";
 
-export default function Statistics({ world }) {
+import { useSim } from "../hooks/useSim";
+
+export default function Statistics() {
+  const { world } = useSim();
+
   const [remainingPopulation, setRemainingPopulation] = useState(0);
   const [maxFitness, setMaxFitness] = useState(0);
   const [minFitness, setMinFitness] = useState(0);

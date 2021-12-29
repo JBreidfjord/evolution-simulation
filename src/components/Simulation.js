@@ -1,13 +1,9 @@
-import * as sim from "../../build/lib_simulation_wasm";
-
-import { useEffect, useState } from "react";
-
 import Canvas from "./Canvas";
+import { useEffect } from "react";
+import { useSim } from "../hooks/useSim";
 
-export default function Simulation({ world, setWorld, simSpeed }) {
-  const [simulation, setSimulation] = useState(() => {
-    return new sim.Simulation();
-  });
+export default function Simulation() {
+  const { simulation, simSpeed, setWorld, isPaused } = useSim();
 
   const step = () => {
     simulation.step();
@@ -15,11 +11,17 @@ export default function Simulation({ world, setWorld, simSpeed }) {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      step();
-    }, 1000 / (60 * simSpeed));
-    return () => clearInterval(interval);
-  }, [simSpeed]);
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        step();
+      }, 1000 / (60 * simSpeed));
+      return () => clearInterval(interval);
+    }
+  }, [simSpeed, isPaused]);
 
-  return <>{world && <Canvas world={world} />}</>;
+  return (
+    <>
+      <Canvas />
+    </>
+  );
 }
