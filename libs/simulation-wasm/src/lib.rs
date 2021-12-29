@@ -4,11 +4,16 @@ use wasm_bindgen::prelude::*;
 
 use lib_simulation as sim;
 
+use crate::config::*;
+
+mod config;
+
 #[wasm_bindgen]
 pub struct Simulation {
     rng: ThreadRng,
     sim: sim::Simulation,
     pub generation: usize,
+    pub config: Config,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -37,14 +42,16 @@ pub struct Food {
 #[wasm_bindgen]
 impl Simulation {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Simulation {
+    pub fn new(config: Option<Config>) -> Simulation {
         let mut rng = thread_rng();
-        let sim = sim::Simulation::random(&mut rng);
+        let config = config.unwrap_or_default();
+        let sim = sim::Simulation::random(&mut rng, Some(config.into()));
 
         Simulation {
             rng,
             sim,
             generation: 0,
+            config,
         }
     }
 
