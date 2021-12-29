@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 
 import Canvas from "./Canvas";
 
-export default function Simulation() {
+export default function Simulation({ world, setWorld, simSpeed }) {
   const [simulation, setSimulation] = useState(() => {
     return new sim.Simulation();
   });
-  const [world, setWorld] = useState(simulation.world());
 
   const step = () => {
     simulation.step();
@@ -18,13 +17,9 @@ export default function Simulation() {
   useEffect(() => {
     const interval = setInterval(() => {
       step();
-    }, 1000 / 60);
+    }, 1000 / (60 * simSpeed));
     return () => clearInterval(interval);
-  }, []);
+  }, [simSpeed]);
 
-  return (
-    <>
-      <Canvas world={world} />
-    </>
-  );
+  return <>{world && <Canvas world={world} />}</>;
 }
