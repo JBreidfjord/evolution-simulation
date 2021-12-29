@@ -43,7 +43,7 @@ CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
   ctx.fill();
 };
 
-export default function Canvas({ world, step }) {
+export default function Canvas({ world }) {
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -55,8 +55,8 @@ export default function Canvas({ world, step }) {
       // const width = Math.round(getComputedStyle(canvas).getPropertyValue("width").slice(0, -2));
       // const height = Math.round(getComputedStyle(canvas).getPropertyValue("height").slice(0, -2));
       // Window inner sizes will scale canvas if window size changes, computed styles will keep the same canvas size
-      const width = Math.round(window.innerWidth * 0.9);
-      const height = Math.round(window.innerHeight * 0.9);
+      const width = Math.round(window.innerWidth * 0.95);
+      const height = Math.round(window.innerHeight);
 
       const needResize = canvas.width !== width * ratio || canvas.height !== height * ratio;
 
@@ -91,7 +91,7 @@ export default function Canvas({ world, step }) {
 
     let requestId = render();
     return () => cancelAnimationFrame(requestId);
-  }, [step, world]);
+  }, [world]);
 
   return <canvas ref={canvasRef} />;
 }

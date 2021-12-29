@@ -4,18 +4,14 @@ import { useEffect, useState } from "react";
 
 import Canvas from "./Canvas";
 
-const simulation = new sim.Simulation();
-
 export default function Simulation() {
+  const [simulation, setSimulation] = useState(() => {
+    return new sim.Simulation();
+  });
   const [world, setWorld] = useState(simulation.world());
-  const [count, setCount] = useState(2500);
 
   const step = () => {
-    if (simulation.step()) {
-      setCount(2500);
-    } else {
-      setCount((c) => c - 1);
-    }
+    simulation.step();
     setWorld(simulation.world());
   };
 
@@ -27,9 +23,8 @@ export default function Simulation() {
   }, []);
 
   return (
-    <div>
-      <Canvas world={world} step={step} />
-      <p>{count}</p>
-    </div>
+    <>
+      <Canvas world={world} />
+    </>
   );
 }
