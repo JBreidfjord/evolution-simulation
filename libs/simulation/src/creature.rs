@@ -14,22 +14,22 @@ pub struct Creature {
 }
 
 impl Creature {
-    pub fn random(rng: &mut dyn RngCore) -> Creature {
+    pub fn random(rng: &mut dyn RngCore, config: &Config) -> Creature {
         let eye = Eye::default();
         let brain = Brain::random(rng, &eye);
 
-        Creature::new(eye, brain, rng)
+        Creature::new(eye, brain, rng, &config)
     }
 
-    fn new(eye: Eye, brain: Brain, rng: &mut dyn RngCore) -> Creature {
+    fn new(eye: Eye, brain: Brain, rng: &mut dyn RngCore, config: &Config) -> Creature {
         Creature {
             position: rng.gen(),
             rotation: rng.gen(),
-            speed: SPEED_MIN,
+            speed: config.speed_min,
             eye,
             brain,
             satiation: 0,
-            energy: STARTING_ENERGY,
+            energy: config.starting_energy,
             alive: true,
         }
     }
@@ -39,11 +39,15 @@ impl Creature {
         self.brain.as_chromosome()
     }
 
-    crate fn from_chromosome(chromosome: ga::Chromosome, rng: &mut dyn RngCore) -> Creature {
+    crate fn from_chromosome(
+        chromosome: ga::Chromosome,
+        rng: &mut dyn RngCore,
+        config: &Config,
+    ) -> Creature {
         let eye = Eye::default();
         let brain = Brain::from_chromosome(chromosome, &eye);
 
-        Creature::new(eye, brain, rng)
+        Creature::new(eye, brain, rng, &config)
     }
 
     pub fn position(&self) -> na::Point2<f32> {
