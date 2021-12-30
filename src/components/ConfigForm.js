@@ -23,7 +23,7 @@ const getStepSize = (value) => {
 };
 
 export default function ConfigForm({ handleClose }) {
-  const { simConfig, setSimConfig, newSim, setIsPaused, setStartNewSim } = useSim();
+  const { simConfig, setSimConfig, setIsPaused, setStartNewSim } = useSim();
   const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.intoObject()));
   const [config, setConfig] = useState(simConfig.intoObject());
   const [configStepSizes, setConfigStepSizes] = useState(null);
@@ -99,20 +99,3 @@ export default function ConfigForm({ handleClose }) {
     </div>
   );
 }
-
-// pub struct Config {
-//   pub population_count: usize,
-//   pub food_count: usize,
-//   pub creature_size: f32,
-//   pub food_size: f32,
-//   pub starting_energy: f32,
-//   pub food_energy: f32,
-//   pub energy_loss_factor: f32,
-//   pub generation_length: usize,
-//   pub speed_min: f32,
-//   pub speed_max: f32,
-//   pub speed_accel: f32,
-//   pub rotation_accel: f32,
-//   pub mutation_rate: f32,
-//   pub mutation_strength: f32,
-// }

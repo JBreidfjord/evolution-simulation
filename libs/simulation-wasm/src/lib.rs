@@ -60,6 +60,10 @@ impl Simulation {
         JsValue::from_serde(&world).unwrap()
     }
 
+    pub fn age(&self) -> usize {
+        *self.sim.age()
+    }
+
     pub fn step(&mut self) -> bool {
         // Return bool to indicate if the generation has ended
         if self.sim.step(&mut self.rng).is_some() {

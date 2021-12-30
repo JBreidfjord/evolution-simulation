@@ -51,6 +51,10 @@ impl Simulation {
         &self.world
     }
 
+    pub fn age(&self) -> &usize {
+        &self.age
+    }
+
     pub fn step(&mut self, rng: &mut dyn RngCore) -> Option<ga::Statistics> {
         self.process_movement();
         self.process_collisions(rng);

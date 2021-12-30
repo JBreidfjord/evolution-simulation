@@ -25,13 +25,3 @@
 .button-group .btn {
   margin: 4px 4px 0;
 }
-
-.config-form .btn.close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: transparent;
-  color: var(--text-color);
-  border: none;
-  margin: auto;
-}

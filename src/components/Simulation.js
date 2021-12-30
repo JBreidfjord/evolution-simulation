@@ -2,8 +2,8 @@ import Canvas from "./Canvas";
 import { useEffect } from "react";
 import { useSim } from "../hooks/useSim";
 
-export default function Simulation() {
-  const { simulation, simSpeed, setWorld, isPaused } = useSim();
+export default function Simulation({ setShowExtinctionModal }) {
+  const { simulation, simSpeed, world, setWorld, isPaused, setIsPaused } = useSim();
 
   useEffect(() => {
     console.log(simulation);
@@ -13,6 +13,13 @@ export default function Simulation() {
     simulation.step();
     setWorld(simulation.world());
   };
+
+  useEffect(() => {
+    if (world.creatures.filter((creature) => creature.alive).length === 0 && simulation.age() > 0) {
+      setIsPaused(true);
+      setShowExtinctionModal(true);
+    }
+  }, [world]);
 
   useEffect(() => {
     if (!isPaused) {
