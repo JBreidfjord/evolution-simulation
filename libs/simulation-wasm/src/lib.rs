@@ -66,7 +66,7 @@ impl Simulation {
 
     pub fn step(&mut self) -> bool {
         // Return bool to indicate if the generation has ended
-        if self.sim.step(&mut self.rng).is_some() {
+        if self.sim.step(&mut self.rng) {
             self.generation += 1;
             true
         } else {
@@ -74,15 +74,9 @@ impl Simulation {
         }
     }
 
-    pub fn train(&mut self) -> Vec<f32> {
-        let stats = self.sim.train(&mut self.rng);
+    pub fn train(&mut self) {
+        self.sim.train(&mut self.rng);
         self.generation += 1;
-
-        vec![
-            stats.min_fitness(),
-            stats.max_fitness(),
-            stats.avg_fitness(),
-        ]
     }
 }
 
