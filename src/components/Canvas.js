@@ -46,7 +46,7 @@ CanvasRenderingContext2D.prototype.drawFood = function (x, y, radius) {
 };
 
 export default function Canvas() {
-  const { world, simConfig } = useSim();
+  const { world, simConfig, isPaused } = useSim();
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -89,9 +89,20 @@ export default function Canvas() {
       }
     };
 
+    if (isPaused) {
+      let requestId;
+      const interval = setInterval(() => {
+        requestId = render();
+      }, 1000 / 60);
+      return () => {
+        clearInterval(interval);
+        cancelAnimationFrame(requestId);
+      };
+    }
+
     let requestId = render();
     return () => cancelAnimationFrame(requestId);
-  }, [world, simConfig]);
+  }, [world, simConfig, window.innerWidth, window.innerHeight, isPaused]);
 
   return <canvas ref={canvasRef} />;
 }

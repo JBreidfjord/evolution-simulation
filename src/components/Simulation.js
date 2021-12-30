@@ -19,9 +19,5 @@ export default function Simulation() {
     }
   }, [simSpeed, isPaused]);
 
-  return (
-    <>
-      <Canvas />
-    </>
-  );
+  return <Canvas />;
 }
