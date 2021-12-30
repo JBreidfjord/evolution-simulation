@@ -9,11 +9,12 @@ import Extinction from "./components/modals/Extinction";
 import LeftSidebar from "./components/sidebars/LeftSidebar";
 import Modal from "./components/modals/Modal";
 import RightSidebar from "./components/sidebars/RightSidebar";
-import { SimProvider } from "./context/SimContext";
 import Simulation from "./components/Simulation";
 import Statistics from "./components/sidebars/Statistics";
+import { useSim } from "./hooks/useSim";
 
 export default function App() {
+  const { simulation, world, setIsPaused } = useSim();
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [showExtinctionModal, setShowExtinctionModal] = useState(false);
   const [clickOpenModal, setClickOpenModal] = useState(false);
@@ -37,43 +38,47 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (world.creatures.filter((creature) => creature.alive).length === 0 && simulation.age() > 0) {
+      setIsPaused(true);
+      setSimReady(false);
+      handleExtinctionModalOpen();
+    }
+  }, [world]);
+
+  useEffect(() => {
     if (simReady) {
       setShowEntryModal(false);
+      handleExtinctionModalClose(false);
     }
   }, [simReady]);
 
   return (
     <div className="App">
-      <SimProvider>
-        <LeftSidebar>
-          <Controls setShowConfigModal={setShowConfigModal} />
-        </LeftSidebar>
-        <RightSidebar>
-          <Statistics />
-        </RightSidebar>
-        {clickOpenModal && (
-          <div className="modal-open-screen" onClick={() => handleExtinctionModalOpen()}></div>
-        )}
-        <Simulation setShowExtinctionModal={setShowExtinctionModal} />
-        {showConfigModal && (
-          <Modal handleClose={handleConfigModalClose}>
-            <ConfigForm handleClose={handleConfigModalClose} />
-          </Modal>
-        )}
-        {showExtinctionModal && (
-          <Modal handleClose={handleExtinctionModalClose}>
-            <Extinction
-              handleClose={handleExtinctionModalClose}
-              setShowConfigModal={setShowConfigModal}
-            />
-          </Modal>
-        )}
-        {showEntryModal && (
-          <Modal>
-            <Entry setShowConfigModal={setShowConfigModal} setSimReady={setSimReady} />
-          </Modal>
-        )}
-      </SimProvider>
+      <LeftSidebar>
+        <Controls setShowConfigModal={setShowConfigModal} />
+      </LeftSidebar>
+      <RightSidebar>
+        <Statistics />
+      </RightSidebar>
+      {clickOpenModal && (
+        <div className="modal-open-screen" onClick={() => handleExtinctionModalOpen()}></div>
+      )}
+      <Simulation setShowExtinctionModal={setShowExtinctionModal} />
+      {showConfigModal && (
+        <Modal handleClose={handleConfigModalClose}>
+          <ConfigForm handleClose={handleConfigModalClose} />
+        </Modal>
+      )}
+      {showExtinctionModal && (
+        <Modal handleClose={handleExtinctionModalClose}>
+          <Extinction handleClose={handleExtinctionModalClose} setSimReady={setSimReady} />
+        </Modal>
+      )}
+      {showEntryModal && (
+        <Modal>
+          <Entry setSimReady={setSimReady} />
+        </Modal>
+      )}
     </div>
   );
 }

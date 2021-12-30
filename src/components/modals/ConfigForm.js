@@ -22,7 +22,7 @@ const getStepSize = (value) => {
   return decimals ? 10 ** -(decimals.split("").findIndex((d) => d !== "0") + 1) : 1;
 };
 
-export default function ConfigForm({ handleClose, isEntryConfig }) {
+export default function ConfigForm({ handleClose, isNestedConfig }) {
   const { simConfig, setSimConfig, setIsPaused, setStartNewSim } = useSim();
   const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.intoObject()));
   const [config, setConfig] = useState(simConfig.intoObject());
@@ -39,7 +39,7 @@ export default function ConfigForm({ handleClose, isEntryConfig }) {
     setIsPaused(true);
     setSimConfig(new sim.Config(config));
     setStartNewSim(true);
-    isEntryConfig ? handleClose(true) : handleClose();
+    isNestedConfig ? handleClose(true) : handleClose();
   };
 
   const resetOptions = (current = true) => {
@@ -53,54 +53,57 @@ export default function ConfigForm({ handleClose, isEntryConfig }) {
   };
 
   return (
-    <div className="config-form">
-      {!isEntryConfig && (
-        <button className="btn close" onClick={handleClose}>
-          X
-        </button>
-      )}
-      <form>
-        {config &&
-          configStepSizes &&
-          configOptions.map((option, i) => {
-            return (
-              <label key={option}>
-                <span>{option}:</span>
-                <input
-                  type="number"
-                  onChange={(e) =>
-                    setConfig((prevConfig) => ({
-                      ...prevConfig,
-                      [option]: parseFloat(e.target.value),
-                    }))
-                  }
-                  value={config[option]}
-                  min={configStepSizes[i]}
-                  step={configStepSizes[i]}
-                />
-              </label>
-            );
-          })}
-      </form>
-      <div className="button-group">
-        {isEntryConfig && (
-          <button className="btn" onClick={() => handleClose(false)}>
-            Back
+    <>
+      <button
+        className="btn close"
+        onClick={isNestedConfig ? () => handleClose(false) : handleClose}
+      >
+        X
+      </button>
+      <div className="config-form">
+        <form>
+          {config &&
+            configStepSizes &&
+            configOptions.map((option, i) => {
+              return (
+                <label key={option}>
+                  <span>{option}:</span>
+                  <input
+                    type="number"
+                    onChange={(e) =>
+                      setConfig((prevConfig) => ({
+                        ...prevConfig,
+                        [option]: parseFloat(e.target.value),
+                      }))
+                    }
+                    value={config[option]}
+                    min={configStepSizes[i]}
+                    step={configStepSizes[i]}
+                  />
+                </label>
+              );
+            })}
+        </form>
+        <div className="button-group">
+          {isNestedConfig && (
+            <button className="btn" onClick={() => handleClose(false)}>
+              Back
+            </button>
+          )}
+          <button className="btn submit" onClick={handleSubmit}>
+            Submit
           </button>
-        )}
-        <button className="btn submit" onClick={handleSubmit}>
-          Submit
-        </button>
+        </div>
+        <div className="button-group">
+          <span>Reset:</span>
+          <button className="btn" onClick={resetOptions}>
+            Current
+          </button>
+          <button className="btn" onClick={() => resetOptions(false)}>
+            Default
+          </button>
+        </div>
       </div>
-      <div className="button-group">
-        <span>Reset:</span>
-        <button className="btn" onClick={resetOptions}>
-          Current
-        </button>
-        <button className="btn" onClick={() => resetOptions(false)}>
-          Default
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

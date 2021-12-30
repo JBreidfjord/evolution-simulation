@@ -42,10 +42,13 @@ export default function Entry({ setSimReady }) {
             </div>
           </>
         ) : (
-          <ConfigForm handleClose={handleConfigClose} isEntryConfig={true} />
+          <ConfigForm handleClose={handleConfigClose} isNestedConfig={true} />
         )
       ) : (
         <>
+          <button className="btn close" onClick={() => setShowInfo(false)}>
+            X
+          </button>
           <p>
             Like in nature, these creatures will learn and adapt to their environment over
             generations of evolution. Each creature is controlled by a neural network, and at the
