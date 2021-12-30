@@ -14,7 +14,9 @@ export default function LeftSidebar({ children }) {
 
   return (
     <>
-      <div className="sidebar-toggle left" onClick={() => setOpen("open")}></div>
+      <div className="sidebar-toggle left" onClick={() => setOpen("open")}>
+        {">"}
+      </div>
       <div className={"sidebar left" + ` ${open}`} onClick={handleClose}>
         {open && children}
       </div>

@@ -14,7 +14,9 @@ export default function RightSidebar({ children }) {
 
   return (
     <>
-      <div className="sidebar-toggle right" onClick={() => setOpen("open")}></div>
+      <div className="sidebar-toggle right" onClick={() => setOpen("open")}>
+        {"<"}
+      </div>
       <div className={"sidebar right" + ` ${open}`} onClick={handleClose}>
         {open && children}
       </div>
