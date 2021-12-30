@@ -26,7 +26,7 @@ export default function App() {
         </RightSidebar>
         <Simulation />
         {showConfigModal && (
-          <Modal>
+          <Modal handleClose={handleConfigModalClose}>
             <ConfigForm handleClose={handleConfigModalClose} />
           </Modal>
         )}
