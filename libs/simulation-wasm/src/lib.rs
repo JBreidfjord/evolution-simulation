@@ -1,5 +1,5 @@
 use rand::prelude::*;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use lib_simulation as sim;

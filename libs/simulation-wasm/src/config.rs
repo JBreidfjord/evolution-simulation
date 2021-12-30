@@ -1,7 +1,7 @@
 use crate::*;
 
-#[derive(Debug, Clone, Copy, Serialize)]
-#[wasm_bindgen]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[wasm_bindgen(inspectable)]
 pub struct Config {
     pub population_count: usize,
     pub food_count: usize,
@@ -22,42 +22,13 @@ pub struct Config {
 #[wasm_bindgen]
 impl Config {
     #[wasm_bindgen(constructor)]
-    pub fn new(
-        population_count: usize,
-        food_count: usize,
-        creature_size: f32,
-        food_size: f32,
-        starting_energy: f32,
-        food_energy: f32,
-        energy_loss_factor: f32,
-        generation_length: usize,
-        speed_min: f32,
-        speed_max: f32,
-        speed_accel: f32,
-        rotation_accel: f32,
-        mutation_rate: f32,
-        mutation_strength: f32,
-    ) -> Config {
-        Config {
-            population_count,
-            food_count,
-            creature_size,
-            food_size,
-            starting_energy,
-            food_energy,
-            energy_loss_factor,
-            generation_length,
-            speed_min,
-            speed_max,
-            speed_accel,
-            rotation_accel,
-            mutation_rate,
-            mutation_strength,
-        }
+    pub fn from_object(obj: &JsValue) -> Config {
+        obj.into_serde().unwrap_or_default()
     }
 
-    pub fn default() -> Config {
-        Config::from(sim::Config::default())
+    #[wasm_bindgen(js_name = intoObject)]
+    pub fn into_object(&self) -> JsValue {
+        JsValue::from_serde(self).unwrap()
     }
 }
 
