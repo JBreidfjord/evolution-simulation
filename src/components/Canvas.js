@@ -16,7 +16,7 @@ const getPixelRatio = (ctx) => {
   return (window.devicePixelRatio || 1) / backingStore;
 };
 
-CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation, fitness) {
+CanvasRenderingContext2D.prototype.drawCreature = function (x, y, size, rotation, fitness) {
   const ctx = this;
 
   ctx.beginPath();
@@ -35,7 +35,7 @@ CanvasRenderingContext2D.prototype.drawTriangle = function (x, y, size, rotation
   ctx.fill();
 };
 
-CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
+CanvasRenderingContext2D.prototype.drawFood = function (x, y, radius) {
   const ctx = this;
 
   ctx.beginPath();
@@ -46,7 +46,7 @@ CanvasRenderingContext2D.prototype.drawCircle = function (x, y, radius) {
 };
 
 export default function Canvas() {
-  const { world } = useSim();
+  const { world, simConfig } = useSim();
   const canvasRef = useRef();
 
   useEffect(() => {
@@ -55,9 +55,6 @@ export default function Canvas() {
 
     const setScale = () => {
       const ratio = getPixelRatio(ctx);
-      // const width = Math.round(getComputedStyle(canvas).getPropertyValue("width").slice(0, -2));
-      // const height = Math.round(getComputedStyle(canvas).getPropertyValue("height").slice(0, -2));
-      // Window inner sizes will scale canvas if window size changes, computed styles will keep the same canvas size
       const width = Math.round(window.innerWidth * 0.95);
       const height = Math.round(window.innerHeight);
 
@@ -76,15 +73,15 @@ export default function Canvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const food of world.foods) {
-        ctx.drawCircle(food.x * canvas.width, food.y * canvas.height, (0.01 / 2.0) * canvas.width);
+        ctx.drawFood(food.x * canvas.width, food.y * canvas.height, (0.01 / 2.0) * canvas.width);
       }
 
       for (const creature of world.creatures) {
         if (creature.alive) {
-          ctx.drawTriangle(
+          ctx.drawCreature(
             creature.x * canvas.width,
             creature.y * canvas.height,
-            0.01 * canvas.width,
+            simConfig.creature_size * canvas.width,
             creature.rotation,
             creature.fitness / world.foods.length
           );
@@ -94,7 +91,7 @@ export default function Canvas() {
 
     let requestId = render();
     return () => cancelAnimationFrame(requestId);
-  }, [world]);
+  }, [world, simConfig]);
 
   return <canvas ref={canvasRef} />;
 }
