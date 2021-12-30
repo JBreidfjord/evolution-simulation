@@ -2,3 +2,7 @@ target/
 www/node_modules/
 /node_modules/
 TODO
+build/
+.firebase/
+.firebaserc
+.github/
