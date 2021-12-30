@@ -1,10 +1,10 @@
 import "./ConfigForm.css";
 
-import * as sim from "../../build/lib_simulation_wasm";
+import * as sim from "../../../build/lib_simulation_wasm";
 
 import { useEffect, useState } from "react";
 
-import { useSim } from "../hooks/useSim";
+import { useSim } from "../../hooks/useSim";
 
 const defaultConfig = new sim.Config();
 const defaultOptions = Object.keys(defaultConfig.intoObject());

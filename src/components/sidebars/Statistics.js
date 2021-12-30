@@ -2,7 +2,7 @@ import "./Statistics.css";
 
 import { useEffect, useState } from "react";
 
-import { useSim } from "../hooks/useSim";
+import { useSim } from "../../hooks/useSim";
 
 export default function Statistics() {
   const { world } = useSim();

@@ -1,6 +1,6 @@
 import "./Controls.css";
 
-import { useSim } from "../hooks/useSim";
+import { useSim } from "../../hooks/useSim";
 
 export default function Controls({ setShowConfigModal }) {
   const { simSpeed, setSimSpeed, isPaused, setIsPaused } = useSim();

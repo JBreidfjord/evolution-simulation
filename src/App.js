@@ -1,14 +1,14 @@
 import "./App.css";
 
-import ConfigForm from "./components/ConfigForm";
-import Controls from "./components/Controls";
-import Extinction from "./components/Extinction";
-import LeftSidebar from "./components/LeftSidebar";
-import Modal from "./components/Modal";
-import RightSidebar from "./components/RightSidebar";
+import ConfigForm from "./components/modals/ConfigForm";
+import Controls from "./components/sidebars/Controls";
+import Extinction from "./components/modals/Extinction";
+import LeftSidebar from "./components/sidebars/LeftSidebar";
+import Modal from "./components/modals/Modal";
+import RightSidebar from "./components/sidebars/RightSidebar";
 import { SimProvider } from "./context/SimContext";
 import Simulation from "./components/Simulation";
-import Statistics from "./components/Statistics";
+import Statistics from "./components/sidebars/Statistics";
 import { useState } from "react";
 
 export default function App() {

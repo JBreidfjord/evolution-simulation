@@ -1,6 +1,6 @@
 import "./Extinction.css";
 
-import { useSim } from "../hooks/useSim";
+import { useSim } from "../../hooks/useSim";
 
 export default function Extinction({ handleClose, setShowConfigModal }) {
   const { setStartNewSim } = useSim();
