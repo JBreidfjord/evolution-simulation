@@ -30,7 +30,7 @@ impl CreatureIndividual {
         }
     }
 
-    pub fn into_creature(self, rng: &mut dyn RngCore) -> Creature {
-        Creature::from_chromosome(self.chromosome, rng)
+    pub fn into_creature(self, rng: &mut dyn RngCore, config: &Config) -> Creature {
+        Creature::from_chromosome(self.chromosome, rng, &config)
     }
 }
