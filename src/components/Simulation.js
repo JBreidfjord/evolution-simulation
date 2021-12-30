@@ -5,6 +5,10 @@ import { useSim } from "../hooks/useSim";
 export default function Simulation() {
   const { simulation, simSpeed, setWorld, isPaused } = useSim();
 
+  useEffect(() => {
+    console.log(simulation);
+  }, []);
+
   const step = () => {
     simulation.step();
     setWorld(simulation.world());
