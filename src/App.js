@@ -2,6 +2,7 @@ import "./App.css";
 
 import ConfigForm from "./components/modals/ConfigForm";
 import Controls from "./components/sidebars/Controls";
+import Entry from "./components/modals/Entry";
 import Extinction from "./components/modals/Extinction";
 import LeftSidebar from "./components/sidebars/LeftSidebar";
 import Modal from "./components/modals/Modal";
@@ -15,6 +16,7 @@ export default function App() {
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [showExtinctionModal, setShowExtinctionModal] = useState(false);
   const [clickOpenModal, setClickOpenModal] = useState(false);
+  const [showEntryModal, setShowEntryModal] = useState(true);
 
   const handleConfigModalClose = () => {
     setShowConfigModal(false);
@@ -30,6 +32,10 @@ export default function App() {
   const handleExtinctionModalOpen = () => {
     setShowExtinctionModal(true);
     setClickOpenModal(false);
+  };
+
+  const handleEntryModalClose = () => {
+    setShowEntryModal(false);
   };
 
   return (
@@ -56,6 +62,11 @@ export default function App() {
               handleClose={handleExtinctionModalClose}
               setShowConfigModal={setShowConfigModal}
             />
+          </Modal>
+        )}
+        {showEntryModal && (
+          <Modal handleClose={handleEntryModalClose}>
+            <Entry handleClose={handleEntryModalClose} setShowConfigModal={setShowConfigModal} />
           </Modal>
         )}
       </SimProvider>

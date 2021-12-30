@@ -42,10 +42,6 @@ export default function ConfigForm({ handleClose }) {
     handleClose();
   };
 
-  useEffect(() => {
-    console.log(simConfig);
-  }, [simConfig]);
-
   const resetOptions = (current = true) => {
     if (current) {
       setConfigOptions(Object.keys(simConfig.intoObject()));

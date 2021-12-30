@@ -13,7 +13,7 @@ export const SimProvider = ({ children }) => {
   });
   const [simConfig, setSimConfig] = useState(simulation.config);
   const [simSpeed, setSimSpeed] = useState(1);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   const [startNewSim, setStartNewSim] = useState(false);
 
   const newSim = () => {

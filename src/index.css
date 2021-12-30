@@ -9,6 +9,11 @@
   --dark-text-color: #10131d;
 }
 
+@font-face {
+  font-family: Davida;
+  src: url("../public/fonts/Davida.otf");
+}
+
 body {
   font-family: Poppins, sans-serif;
   background: var(--bg-color);

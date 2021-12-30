@@ -5,10 +5,6 @@ import { useSim } from "../hooks/useSim";
 export default function Simulation({ setShowExtinctionModal }) {
   const { simulation, simSpeed, world, setWorld, isPaused, setIsPaused } = useSim();
 
-  useEffect(() => {
-    console.log(simulation);
-  }, []);
-
   const step = () => {
     simulation.step();
     setWorld(simulation.world());
