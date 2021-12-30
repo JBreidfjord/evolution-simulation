@@ -1,41 +1,49 @@
 import "./Entry.css";
 
+import ConfigForm from "./ConfigForm";
 import { useSim } from "../../hooks/useSim";
 import { useState } from "react";
 
-export default function Entry({ handleClose, setShowConfigModal }) {
+export default function Entry({ setSimReady }) {
   const { setStartNewSim } = useSim();
   const [showInfo, setShowInfo] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
 
   const handlePopulate = () => {
     setStartNewSim(true);
-    handleClose();
+    setSimReady(true);
   };
 
-  const handleConfig = () => {
-    setShowConfigModal(true);
-    handleClose();
+  const handleConfigClose = (simReady) => {
+    setShowConfig(false);
+    if (simReady) {
+      setSimReady(true);
+    }
   };
 
   return (
     <div className="entry">
       {!showInfo ? (
-        <>
-          <h2>Flying Microcosmic Societies</h2>
-          <h4>Vol. 2</h4>
-          <p>An Evolution Simulation</p>
-          <div className="button-group">
-            <button className="btn" onClick={handlePopulate}>
-              Populate
-            </button>
-            <button className="btn" onClick={handleConfig}>
-              Config
-            </button>
-            <button className="btn" onClick={() => setShowInfo(true)}>
-              Info
-            </button>
-          </div>
-        </>
+        !showConfig ? (
+          <>
+            <h2>Flying Microcosmic Societies</h2>
+            <h4>Vol. 2</h4>
+            <p>An Evolution Simulation</p>
+            <div className="button-group">
+              <button className="btn" onClick={handlePopulate}>
+                Populate
+              </button>
+              <button className="btn" onClick={() => setShowConfig(true)}>
+                Config
+              </button>
+              <button className="btn" onClick={() => setShowInfo(true)}>
+                Info
+              </button>
+            </div>
+          </>
+        ) : (
+          <ConfigForm handleClose={handleConfigClose} isEntryConfig={true} />
+        )
       ) : (
         <>
           <p>

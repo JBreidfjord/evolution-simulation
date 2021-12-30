@@ -1,5 +1,7 @@
 import "./App.css";
 
+import { useEffect, useState } from "react";
+
 import ConfigForm from "./components/modals/ConfigForm";
 import Controls from "./components/sidebars/Controls";
 import Entry from "./components/modals/Entry";
@@ -10,13 +12,13 @@ import RightSidebar from "./components/sidebars/RightSidebar";
 import { SimProvider } from "./context/SimContext";
 import Simulation from "./components/Simulation";
 import Statistics from "./components/sidebars/Statistics";
-import { useState } from "react";
 
 export default function App() {
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [showExtinctionModal, setShowExtinctionModal] = useState(false);
   const [clickOpenModal, setClickOpenModal] = useState(false);
   const [showEntryModal, setShowEntryModal] = useState(true);
+  const [simReady, setSimReady] = useState(false);
 
   const handleConfigModalClose = () => {
     setShowConfigModal(false);
@@ -34,9 +36,11 @@ export default function App() {
     setClickOpenModal(false);
   };
 
-  const handleEntryModalClose = () => {
-    setShowEntryModal(false);
-  };
+  useEffect(() => {
+    if (simReady) {
+      setShowEntryModal(false);
+    }
+  }, [simReady]);
 
   return (
     <div className="App">
@@ -65,8 +69,8 @@ export default function App() {
           </Modal>
         )}
         {showEntryModal && (
-          <Modal handleClose={handleEntryModalClose}>
-            <Entry handleClose={handleEntryModalClose} setShowConfigModal={setShowConfigModal} />
+          <Modal>
+            <Entry setShowConfigModal={setShowConfigModal} setSimReady={setSimReady} />
           </Modal>
         )}
       </SimProvider>

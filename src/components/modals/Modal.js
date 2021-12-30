@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 export default function Modal({ children, handleClose }) {
   const handleClick = (e) => {
     e.preventDefault();
-    if (e.currentTarget === e.target) {
+    if (e.currentTarget === e.target && handleClose) {
       handleClose();
     }
   };

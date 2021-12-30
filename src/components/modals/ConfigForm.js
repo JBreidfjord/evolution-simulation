@@ -22,7 +22,7 @@ const getStepSize = (value) => {
   return decimals ? 10 ** -(decimals.split("").findIndex((d) => d !== "0") + 1) : 1;
 };
 
-export default function ConfigForm({ handleClose }) {
+export default function ConfigForm({ handleClose, isEntryConfig }) {
   const { simConfig, setSimConfig, setIsPaused, setStartNewSim } = useSim();
   const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.intoObject()));
   const [config, setConfig] = useState(simConfig.intoObject());
@@ -39,7 +39,7 @@ export default function ConfigForm({ handleClose }) {
     setIsPaused(true);
     setSimConfig(new sim.Config(config));
     setStartNewSim(true);
-    handleClose();
+    isEntryConfig ? handleClose(true) : handleClose();
   };
 
   const resetOptions = (current = true) => {
@@ -54,9 +54,11 @@ export default function ConfigForm({ handleClose }) {
 
   return (
     <div className="config-form">
-      <button className="btn close" onClick={handleClose}>
-        X
-      </button>
+      {!isEntryConfig && (
+        <button className="btn close" onClick={handleClose}>
+          X
+        </button>
+      )}
       <form>
         {config &&
           configStepSizes &&
@@ -80,9 +82,16 @@ export default function ConfigForm({ handleClose }) {
             );
           })}
       </form>
-      <button className="btn submit" onClick={handleSubmit}>
-        Submit
-      </button>
+      <div className="button-group">
+        {isEntryConfig && (
+          <button className="btn" onClick={() => handleClose(false)}>
+            Back
+          </button>
+        )}
+        <button className="btn submit" onClick={handleSubmit}>
+          Submit
+        </button>
+      </div>
       <div className="button-group">
         <span>Reset:</span>
         <button className="btn" onClick={resetOptions}>
