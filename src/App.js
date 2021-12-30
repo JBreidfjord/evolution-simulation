@@ -21,10 +21,6 @@ export default function App() {
   const [showEntryModal, setShowEntryModal] = useState(true);
   const [simReady, setSimReady] = useState(false);
 
-  const handleConfigModalClose = () => {
-    setShowConfigModal(false);
-  };
-
   const handleExtinctionModalClose = (enableClickOpen = true) => {
     setShowExtinctionModal(false);
     if (enableClickOpen) {
@@ -63,10 +59,10 @@ export default function App() {
       {clickOpenModal && (
         <div className="modal-open-screen" onClick={() => handleExtinctionModalOpen()}></div>
       )}
-      <Simulation setShowExtinctionModal={setShowExtinctionModal} />
+      <Simulation />
       {showConfigModal && (
-        <Modal handleClose={handleConfigModalClose}>
-          <ConfigForm handleClose={handleConfigModalClose} />
+        <Modal handleClose={() => setShowConfigModal(false)}>
+          <ConfigForm handleClose={() => setShowConfigModal(false)} />
         </Modal>
       )}
       {showExtinctionModal && (
