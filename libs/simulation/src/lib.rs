@@ -9,8 +9,9 @@ use lib_genetic_algorithm as ga;
 use lib_neural_network as nn;
 
 use self::creature_individual::*;
-pub use self::{brain::*, config::*, creature::*, eye::*, food::*, world::*};
+pub use self::{body::*, brain::*, config::*, creature::*, eye::*, food::*, world::*};
 
+mod body;
 mod brain;
 mod config;
 mod creature;
@@ -58,30 +59,44 @@ impl Simulation {
     }
 
     pub fn step(&mut self, rng: &mut dyn RngCore) {
-        self.process_movement();
-        self.process_death();
-        self.process_collisions(rng);
         self.process_brains();
+        self.process_movement();
+        self.process_collisions(rng);
+        self.process_death();
         self.process_evolution(rng);
+        self.process_death();
 
         self.age += 1;
     }
 
-    fn process_movement(&mut self) {
+    fn process_brains(&mut self) {
         for creature in &mut self.world.creatures {
-            creature.position += creature.rotation * na::Vector2::new(creature.speed, 0.0);
+            let vision = creature.eye.process_vision(
+                creature.position,
+                creature.body.rotation,
+                &self.world.foods,
+            );
 
-            creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
-            creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
+            let update = creature.brain.nn.propagate(vision);
+            let speed = update[0].clamp(-self.config.speed_accel, self.config.speed_accel);
+            let rotation = update[1].clamp(-self.config.rotation_accel, self.config.rotation_accel);
 
-            creature.energy -= self.config.energy_loss_factor * creature.speed;
-            creature.energy = creature.energy.max(0.0);
-            creature.alive = creature.energy > 0.0;
+            creature.body.speed =
+                (creature.body.speed + speed).clamp(self.config.speed_min, self.config.speed_max);
+            creature.body.rotation = na::Rotation2::new(creature.body.rotation.angle() + rotation);
+
+            creature.body.process_energy(rotation, &self.config);
         }
     }
 
-    fn process_death(&mut self) {
-        self.world.creatures.retain(|creature| creature.alive);
+    fn process_movement(&mut self) {
+        for creature in &mut self.world.creatures {
+            creature.position +=
+                creature.body.rotation * na::Vector2::new(creature.body.speed, 0.0);
+
+            creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
+            creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
+        }
     }
 
     fn process_collisions(&mut self, rng: &mut dyn RngCore) {
@@ -90,29 +105,11 @@ impl Simulation {
                 let distance = na::distance(&creature.position, &food.position);
 
                 if distance <= (self.config.creature_size + self.config.food_size) / 2.0 {
-                    creature.energy += self.config.food_energy;
+                    creature.body.energy += self.config.food_energy;
                     creature.satiation += 1;
                     food.position = rng.gen();
                 }
             }
-        }
-    }
-
-    fn process_brains(&mut self) {
-        for creature in &mut self.world.creatures {
-            let vision = creature.eye.process_vision(
-                creature.position,
-                creature.rotation,
-                &self.world.foods,
-            );
-
-            let update = creature.brain.nn.propagate(vision);
-            let speed = update[0].clamp(-self.config.speed_accel, self.config.speed_accel);
-            let rotation = update[1].clamp(-self.config.rotation_accel, self.config.rotation_accel);
-
-            creature.speed =
-                (creature.speed + speed).clamp(self.config.speed_min, self.config.speed_max);
-            creature.rotation = na::Rotation2::new(creature.rotation.angle() + rotation);
         }
     }
 
@@ -121,12 +118,12 @@ impl Simulation {
         let mut creatures_with_idx: Vec<(usize, Creature)> =
             creatures.into_iter().enumerate().collect();
         creatures_with_idx
-            .retain(|(_, creature)| creature.energy >= self.config.reproduction_threshold);
+            .retain(|(_, creature)| creature.body.energy >= self.config.reproduction_threshold);
 
         let mut reproduced_indices = Vec::new();
         let mut new_creatures = Vec::new();
         for (idx, creature) in self.world.creatures.iter_mut().enumerate() {
-            if creature.energy >= self.config.reproduction_threshold {
+            if creature.body.energy >= self.config.reproduction_threshold {
                 // Prevent duplicated reproduction
                 if reproduced_indices.contains(&idx) {
                     continue;
@@ -163,7 +160,7 @@ impl Simulation {
                         &CreatureIndividual::from_creature(nearest_creature),
                     )
                     .into_creature(rng, &self.config);
-                new_creature.energy = self.config.reproduction_cost * 2.0; // Energy from parents
+                new_creature.body.energy = self.config.reproduction_cost * 2.0; // Energy from parents
                 new_creature.position = na::center(&creature.position, &nearest_creature.position);
                 new_creature.generation = creature.generation.max(nearest_creature.generation) + 1;
                 new_creatures.push(new_creature);
@@ -175,9 +172,15 @@ impl Simulation {
 
         // Remove energy for reproduction
         for idx in reproduced_indices {
-            self.world.creatures[idx].energy -= self.config.reproduction_cost;
+            self.world.creatures[idx].body.energy -= self.config.reproduction_cost;
         }
         self.world.creatures.extend(new_creatures);
+    }
+
+    fn process_death(&mut self) {
+        self.world
+            .creatures
+            .retain(|creature| creature.body.energy > 0.0);
     }
 
     /// Step until end of current generation
