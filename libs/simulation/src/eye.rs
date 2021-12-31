@@ -5,7 +5,7 @@ const FOV_RANGE: f32 = 0.25;
 const FOV_ANGLE: f32 = PI + FRAC_PI_4;
 const CELLS: usize = 9;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Eye {
     fov_range: f32,
     fov_angle: f32,
@@ -13,7 +13,7 @@ pub struct Eye {
 }
 
 impl Eye {
-    fn new(fov_range: f32, fov_angle: f32, cells: usize) -> Eye {
+    pub fn new(fov_range: f32, fov_angle: f32, cells: usize) -> Eye {
         assert!(fov_range > 0.0);
         assert!(fov_angle > 0.0);
         assert!(cells > 0);

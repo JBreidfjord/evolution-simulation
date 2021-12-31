@@ -51,9 +51,9 @@ export default function Entry({ setSimReady }) {
           </button>
           <p>
             Like in nature, these creatures will learn and adapt to their environment over
-            generations of evolution. Each creature is controlled by a neural network, and at the
-            end of a generation the best fit creatures will reproduce and populate the next
-            generation with their genes.
+            generations of evolution. Each creature is controlled by a neural network, and their
+            goal is to reproduce and pass on their genes to the next generation. To do so they must
+            consume enough food to survive, and reproduce when they have the energy to do so.
           </p>
           <button className="btn" onClick={() => setShowInfo(false)}>
             Back

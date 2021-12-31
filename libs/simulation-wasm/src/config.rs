@@ -10,13 +10,17 @@ pub struct Config {
     pub starting_energy: f32,
     pub food_energy: f32,
     pub energy_loss_factor: f32,
-    pub generation_length: usize,
+    pub reproduction_cost: f32,
+    pub reproduction_threshold: f32,
     pub speed_min: f32,
     pub speed_max: f32,
     pub speed_accel: f32,
     pub rotation_accel: f32,
     pub mutation_rate: f32,
     pub mutation_strength: f32,
+    pub fov_range: f32,
+    pub fov_angle: f32,
+    pub eye_cells: usize,
 }
 
 #[wasm_bindgen]
@@ -42,13 +46,17 @@ impl From<sim::Config> for Config {
             starting_energy: config.starting_energy,
             food_energy: config.food_energy,
             energy_loss_factor: config.energy_loss_factor,
-            generation_length: config.generation_length,
+            reproduction_cost: config.reproduction_cost,
+            reproduction_threshold: config.reproduction_threshold,
             speed_min: config.speed_min,
             speed_max: config.speed_max,
             speed_accel: config.speed_accel,
             rotation_accel: config.rotation_accel,
             mutation_rate: config.mutation_rate,
             mutation_strength: config.mutation_strength,
+            fov_range: config.fov_range,
+            fov_angle: config.fov_angle,
+            eye_cells: config.eye_cells,
         }
     }
 }
@@ -63,13 +71,17 @@ impl Into<sim::Config> for Config {
             starting_energy: self.starting_energy,
             food_energy: self.food_energy,
             energy_loss_factor: self.energy_loss_factor,
-            generation_length: self.generation_length,
+            reproduction_cost: self.reproduction_cost,
+            reproduction_threshold: self.reproduction_threshold,
             speed_min: self.speed_min,
             speed_max: self.speed_max,
             speed_accel: self.speed_accel,
             rotation_accel: self.rotation_accel,
             mutation_rate: self.mutation_rate,
             mutation_strength: self.mutation_strength,
+            fov_range: self.fov_range,
+            fov_angle: self.fov_angle,
+            eye_cells: self.eye_cells,
         }
     }
 }

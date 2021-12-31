@@ -6,13 +6,12 @@ use rand::Rng;
 use std::iter::FromIterator;
 use std::ops::Index;
 
-pub use self::{chromosome::*, crossover::*, mutation::*, selection::*, statistics::*};
+pub use self::{chromosome::*, crossover::*, mutation::*, selection::*};
 
 mod chromosome;
 mod crossover;
 mod mutation;
 mod selection;
-mod statistics;
 
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
@@ -42,7 +41,7 @@ where
         }
     }
 
-    pub fn step<I>(&self, rng: &mut dyn rand::RngCore, population: &[I]) -> (Vec<I>, Statistics)
+    pub fn step<I>(&self, rng: &mut dyn rand::RngCore, population: &[I]) -> Vec<I>
     where
         I: Individual,
     {
@@ -64,9 +63,23 @@ where
             })
             .collect();
 
-        let stats = Statistics::new(population);
+        new_population
+    }
 
-        (new_population, stats)
+    pub fn breed<I>(&self, rng: &mut dyn rand::RngCore, parent_a: &I, parent_b: &I) -> I
+    where
+        I: Individual,
+    {
+        // No Selection
+        // Crossover
+        let mut child =
+            self.crossover_method
+                .crossover(rng, parent_a.chromosome(), parent_b.chromosome());
+
+        // Mutation
+        self.mutation_method.mutate(rng, &mut child);
+
+        I::create(child)
     }
 }
 
@@ -141,7 +154,7 @@ mod tests {
             ];
 
             for _ in 0..5 {
-                population = ga.step(&mut rng, &population).0;
+                population = ga.step(&mut rng, &population);
             }
 
             let expected_population = vec![

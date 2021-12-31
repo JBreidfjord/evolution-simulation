@@ -1,5 +1,7 @@
 #![feature(crate_visibility_modifier)]
 
+use std::cmp::Ordering;
+
 use nalgebra as na;
 use rand::{Rng, RngCore};
 
@@ -36,7 +38,7 @@ impl Simulation {
         let ga = ga::GeneticAlgorithm::new(
             ga::RouletteWheelSelection::new(),
             ga::UniformCrossover::new(),
-            ga::GaussianMutation::new(0.01, 0.3),
+            ga::GaussianMutation::new(config.mutation_rate, config.mutation_strength),
         );
 
         Simulation {
@@ -55,26 +57,35 @@ impl Simulation {
         &self.age
     }
 
-    pub fn step(&mut self, rng: &mut dyn RngCore) -> Option<ga::Statistics> {
+    pub fn step(&mut self, rng: &mut dyn RngCore) {
         self.process_movement();
+        self.process_death();
         self.process_collisions(rng);
         self.process_brains();
+        self.process_evolution(rng);
 
         self.age += 1;
+    }
 
-        if self.age > self.config.generation_length {
-            Some(self.evolve(rng))
-        } else {
-            None
+    fn process_movement(&mut self) {
+        for creature in &mut self.world.creatures {
+            creature.position += creature.rotation * na::Vector2::new(creature.speed, 0.0);
+
+            creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
+            creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
+
+            creature.energy -= self.config.energy_loss_factor * creature.speed;
+            creature.energy = creature.energy.max(0.0);
+            creature.alive = creature.energy > 0.0;
         }
+    }
+
+    fn process_death(&mut self) {
+        self.world.creatures.retain(|creature| creature.alive);
     }
 
     fn process_collisions(&mut self, rng: &mut dyn RngCore) {
         for creature in &mut self.world.creatures {
-            if !creature.alive {
-                continue;
-            }
-
             for food in &mut self.world.foods {
                 let distance = na::distance(&creature.position, &food.position);
 
@@ -89,10 +100,6 @@ impl Simulation {
 
     fn process_brains(&mut self) {
         for creature in &mut self.world.creatures {
-            if !creature.alive {
-                continue;
-            }
-
             let vision = creature.eye.process_vision(
                 creature.position,
                 creature.rotation,
@@ -109,57 +116,72 @@ impl Simulation {
         }
     }
 
-    fn process_movement(&mut self) {
-        for creature in &mut self.world.creatures {
-            if !creature.alive {
-                continue;
+    fn process_evolution(&mut self, rng: &mut dyn RngCore) {
+        let creatures = self.world.creatures.clone();
+        let mut creatures_with_idx: Vec<(usize, Creature)> =
+            creatures.into_iter().enumerate().collect();
+        creatures_with_idx
+            .retain(|(_, creature)| creature.energy >= self.config.reproduction_threshold);
+
+        let mut reproduced_indices = Vec::new();
+        let mut new_creatures = Vec::new();
+        for (idx, creature) in self.world.creatures.iter_mut().enumerate() {
+            if creature.energy >= self.config.reproduction_threshold {
+                // Prevent duplicated reproduction
+                if reproduced_indices.contains(&idx) {
+                    continue;
+                }
+
+                // Find nearest creature with enough energy
+                let (nearest_creature_idx, nearest_creature) = creatures_with_idx
+                    .iter()
+                    .min_by(|(idx_a, a), (idx_b, b)| {
+                        // Prevents self-comparing
+                        if &idx == idx_a || reproduced_indices.contains(idx_a) {
+                            Ordering::Greater
+                        } else if &idx == idx_b || reproduced_indices.contains(idx_b) {
+                            Ordering::Less
+                        } else {
+                            na::distance(&a.position, &creature.position)
+                                .partial_cmp(&na::distance(&b.position, &creature.position))
+                                .unwrap_or(Ordering::Equal)
+                        }
+                    })
+                    .unwrap();
+
+                // Prevent self-reproduction and duplicated reproduction
+                if &idx == nearest_creature_idx || reproduced_indices.contains(nearest_creature_idx)
+                {
+                    continue;
+                }
+
+                let mut new_creature = self
+                    .ga
+                    .breed(
+                        rng,
+                        &CreatureIndividual::from_creature(creature),
+                        &CreatureIndividual::from_creature(nearest_creature),
+                    )
+                    .into_creature(rng, &self.config);
+                new_creature.energy = self.config.reproduction_cost * 2.0; // Energy from parents
+                new_creature.position = na::center(&creature.position, &nearest_creature.position);
+                new_creature.generation = creature.generation.max(nearest_creature.generation) + 1;
+                new_creatures.push(new_creature);
+
+                reproduced_indices.push(idx);
+                reproduced_indices.push(*nearest_creature_idx);
             }
-
-            creature.position += creature.rotation * na::Vector2::new(creature.speed, 0.0);
-
-            creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
-            creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
-
-            creature.energy -= self.config.energy_loss_factor * creature.speed;
-            creature.energy = creature.energy.max(0.0);
-            creature.alive = creature.energy > 0.0;
-        }
-    }
-
-    fn evolve(&mut self, rng: &mut dyn RngCore) -> ga::Statistics {
-        self.age = 0;
-
-        // Transform Vec<Creature> into Vec<CreatureIndividual>
-        let current_population: Vec<_> = self
-            .world
-            .creatures
-            .iter()
-            .map(CreatureIndividual::from_creature)
-            .collect();
-
-        // Evolve the population
-        let (evolved_population, stats) = self.ga.step(rng, &current_population);
-
-        // Transform Vec<CreatureIndividual> into Vec<Creature>
-        self.world.creatures = evolved_population
-            .into_iter()
-            .map(|individual| individual.into_creature(rng, &self.config))
-            .collect();
-
-        // Reset food positions
-        for food in &mut self.world.foods {
-            food.position = rng.gen();
         }
 
-        stats
+        // Remove energy for reproduction
+        for idx in reproduced_indices {
+            self.world.creatures[idx].energy -= self.config.reproduction_cost;
+        }
+        self.world.creatures.extend(new_creatures);
     }
 
     /// Step until end of current generation
-    pub fn train(&mut self, rng: &mut dyn RngCore) -> ga::Statistics {
-        loop {
-            if let Some(summary) = self.step(rng) {
-                return summary;
-            }
-        }
+    pub fn train(&mut self) {
+        todo!()
     }
 }

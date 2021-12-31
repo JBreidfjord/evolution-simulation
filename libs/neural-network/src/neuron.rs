@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 crate struct Neuron {
     crate weights: Vec<f32>,
     crate bias: f32,

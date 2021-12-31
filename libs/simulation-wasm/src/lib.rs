@@ -30,7 +30,7 @@ pub struct Creature {
     pub rotation: f32,
     pub fitness: f32,
     pub energy: f32,
-    pub alive: bool,
+    pub generation: usize,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -64,25 +64,13 @@ impl Simulation {
         *self.sim.age()
     }
 
-    pub fn step(&mut self) -> bool {
-        // Return bool to indicate if the generation has ended
-        if self.sim.step(&mut self.rng).is_some() {
-            self.generation += 1;
-            true
-        } else {
-            false
-        }
+    pub fn step(&mut self) {
+        self.sim.step(&mut self.rng)
     }
 
-    pub fn train(&mut self) -> Vec<f32> {
-        let stats = self.sim.train(&mut self.rng);
+    pub fn train(&mut self) {
+        self.sim.train();
         self.generation += 1;
-
-        vec![
-            stats.min_fitness(),
-            stats.max_fitness(),
-            stats.avg_fitness(),
-        ]
     }
 }
 
@@ -99,7 +87,7 @@ impl From<&sim::World> for World {
                 rotation: creature.rotation,
                 fitness: creature.fitness,
                 energy: creature.energy,
-                alive: creature.alive,
+                generation: creature.generation,
             })
             .collect();
         let foods = world.foods().iter().map(Food::from).collect();
@@ -117,7 +105,7 @@ impl From<&sim::Creature> for Creature {
             rotation: creature.rotation().angle(),
             fitness: creature.fitness(),
             energy: creature.energy(),
-            alive: creature.alive(),
+            generation: creature.generation(),
         }
     }
 }
