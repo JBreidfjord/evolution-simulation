@@ -17,6 +17,18 @@ impl Chromosome {
     pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut f32> {
         self.genes.iter_mut()
     }
+
+    pub fn split_at(&mut self, index: usize) -> [Chromosome; 2] {
+        let (left, right) = self.genes.split_at_mut(index);
+        [
+            Chromosome {
+                genes: left.to_vec(),
+            },
+            Chromosome {
+                genes: right.to_vec(),
+            },
+        ]
+    }
 }
 
 impl Index<usize> for Chromosome {
