@@ -13,7 +13,7 @@ pub struct Body {
 impl Body {
     pub fn new(rng: &mut dyn RngCore, size: f32, color: f32, config: &Config) -> Body {
         assert!(size > 0.0);
-        assert!(color > 0.0);
+        assert!(color >= 0.0);
 
         Body {
             size,
@@ -40,8 +40,8 @@ impl Body {
         rng: &mut dyn RngCore,
         config: &Config,
     ) -> Body {
-        let size = chromosome[0];
-        let color = chromosome[1];
+        let size = chromosome[0].clamp(config.creature_size / 10.0, 1.0);
+        let color = chromosome[1].clamp(0.0, 1.0);
 
         Body::new(rng, size, color, config)
     }
