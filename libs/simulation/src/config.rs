@@ -74,7 +74,7 @@ impl Default for Config {
             food_size: 0.01,
             starting_energy: 100.0,
             food_energy: 25.0,
-            energy_loss_factor: 1.5,
+            energy_loss_factor: 5.0,
             reproduction_cost: 50.0,
             reproduction_threshold: 100.0,
             speed_min: 0.001,
