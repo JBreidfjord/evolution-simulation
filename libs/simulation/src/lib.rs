@@ -117,32 +117,43 @@ impl Simulation {
     }
 
     fn process_evolution(&mut self, rng: &mut dyn RngCore) {
-        let mut creatures = self.world.creatures.clone();
-        creatures.retain(|creature| creature.energy >= self.config.reproduction_threshold);
+        let creatures = self.world.creatures.clone();
+        let mut creatures_with_idx: Vec<(usize, Creature)> =
+            creatures.into_iter().enumerate().collect();
+        creatures_with_idx
+            .retain(|(_, creature)| creature.energy >= self.config.reproduction_threshold);
 
+        let mut reproduced_indices = Vec::new();
         let mut new_creatures = Vec::new();
-        for creature in &mut self.world.creatures {
+        for (idx, creature) in self.world.creatures.iter_mut().enumerate() {
             if creature.energy >= self.config.reproduction_threshold {
-                creature.energy -= self.config.reproduction_cost;
+                // Prevent duplicated reproduction
+                if reproduced_indices.contains(&idx) {
+                    continue;
+                }
 
                 // Find nearest creature with enough energy
-                let nearest_creature: &Creature = creatures
+                let (nearest_creature_idx, nearest_creature) = creatures_with_idx
                     .iter()
-                    .min_by(|a, b| {
-                        let distance_a = na::distance(&a.position, &creature.position);
-                        let distance_b = na::distance(&b.position, &creature.position);
+                    .min_by(|(idx_a, a), (idx_b, b)| {
                         // Prevents self-comparing
-                        if distance_a == 0.0 {
+                        if &idx == idx_a || reproduced_indices.contains(idx_a) {
                             Ordering::Greater
-                        } else if distance_b == 0.0 {
+                        } else if &idx == idx_b || reproduced_indices.contains(idx_b) {
                             Ordering::Less
                         } else {
-                            distance_a
-                                .partial_cmp(&distance_b)
+                            na::distance(&a.position, &creature.position)
+                                .partial_cmp(&na::distance(&b.position, &creature.position))
                                 .unwrap_or(Ordering::Equal)
                         }
                     })
                     .unwrap();
+
+                // Prevent self-reproduction and duplicated reproduction
+                if &idx == nearest_creature_idx || reproduced_indices.contains(nearest_creature_idx)
+                {
+                    continue;
+                }
 
                 let mut new_creature = self
                     .ga
@@ -152,11 +163,19 @@ impl Simulation {
                         &CreatureIndividual::from_creature(nearest_creature),
                     )
                     .into_creature(rng, &self.config);
-                new_creature.energy = self.config.reproduction_cost;
+                new_creature.energy = self.config.reproduction_cost * 2.0; // Energy from parents
+                new_creature.position = na::center(&creature.position, &nearest_creature.position);
                 new_creatures.push(new_creature);
+
+                reproduced_indices.push(idx);
+                reproduced_indices.push(*nearest_creature_idx);
             }
         }
 
+        // Remove energy for reproduction
+        for idx in reproduced_indices {
+            self.world.creatures[idx].energy -= self.config.reproduction_cost;
+        }
         self.world.creatures.extend(new_creatures);
     }
 
