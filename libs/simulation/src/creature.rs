@@ -43,7 +43,9 @@ impl Creature {
         rng: &mut dyn RngCore,
         config: &Config,
     ) -> Creature {
-        let brain_chromosome_length = config.eye_cells * (2 * config.eye_cells + 4);
+        let brain_chromosome_length = (config.eye_cells * 2 * config.eye_cells) // Input Layer
+            + (2 * config.eye_cells * 2) // Hidden Layer
+            + (config.eye_cells * 2 + 2); // Biases
         let [brain_chromosome, body_chromosome] = chromosome.split_at(brain_chromosome_length);
 
         let eye = Eye::new(config.fov_range, config.fov_angle, config.eye_cells);
