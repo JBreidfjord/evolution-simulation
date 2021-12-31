@@ -1,2 +1,5 @@
 [workspace]
 members = ["libs/*"]
+
+[profile.test]
+opt-level = 3
