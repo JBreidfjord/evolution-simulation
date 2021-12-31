@@ -1,20 +1,22 @@
 use std::f32::consts::FRAC_PI_2;
 
 pub struct Config {
-    pub population_count: usize,  // Number of individuals in the population
-    pub food_count: usize,        // Number of food in the world
-    pub creature_size: f32,       // Size of the creatures
-    pub food_size: f32,           // Size of the food
-    pub starting_energy: f32,     // Starting energy of the creatures
-    pub food_energy: f32,         // Energy gained from each food
-    pub energy_loss_factor: f32,  // Energy lost each tick * Creature speed
+    pub population_count: usize, // Number of individuals in the population
+    pub food_count: usize,       // Number of food in the world
+    pub creature_size: f32,      // Size of the creatures
+    pub food_size: f32,          // Size of the food
+    pub starting_energy: f32,    // Starting energy of the creatures
+    pub food_energy: f32,        // Energy gained from each food
+    pub energy_loss_factor: f32, // Energy lost each tick * Creature speed
+    pub reproduction_cost: f32,  // Energy cost to reproduce
+    pub reproduction_threshold: f32, // Threshold for allowing reproduction
     pub generation_length: usize, // Steps before evolution
-    pub speed_min: f32,           // Minimum Creature speed
-    pub speed_max: f32,           // Maximum Creature speed
-    pub speed_accel: f32,         // Change in speed per update
-    pub rotation_accel: f32,      // Change in rotation per update
-    pub mutation_rate: f32,       // Probability of mutation [0, 1]
-    pub mutation_strength: f32,   // Multiplied factor of mutation
+    pub speed_min: f32,          // Minimum Creature speed
+    pub speed_max: f32,          // Maximum Creature speed
+    pub speed_accel: f32,        // Change in speed per update
+    pub rotation_accel: f32,     // Change in rotation per update
+    pub mutation_rate: f32,      // Probability of mutation [0, 1]
+    pub mutation_strength: f32,  // Multiplied factor of mutation
 }
 
 impl Config {
@@ -26,6 +28,8 @@ impl Config {
         starting_energy: f32,
         food_energy: f32,
         energy_loss_factor: f32,
+        reproduction_cost: f32,
+        reproduction_threshold: f32,
         generation_length: usize,
         speed_min: f32,
         speed_max: f32,
@@ -42,6 +46,8 @@ impl Config {
             starting_energy,
             food_energy,
             energy_loss_factor,
+            reproduction_cost,
+            reproduction_threshold,
             generation_length,
             speed_min,
             speed_max,
@@ -63,6 +69,8 @@ impl Default for Config {
             starting_energy: 100.0,
             food_energy: 25.0,
             energy_loss_factor: 50.0,
+            reproduction_cost: 50.0,
+            reproduction_threshold: 100.0,
             generation_length: 2500,
             speed_min: 0.001,
             speed_max: 0.005,
