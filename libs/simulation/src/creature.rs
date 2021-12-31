@@ -80,4 +80,8 @@ impl Creature {
     pub fn size(&self) -> f32 {
         self.body.size
     }
+
+    pub fn color(&self) -> f32 {
+        self.body.color
+    }
 }
