@@ -16,7 +16,7 @@ pub struct Creature {
 
 impl Creature {
     pub fn random(rng: &mut dyn RngCore, config: &Config) -> Creature {
-        let eye = Eye::default();
+        let eye = Eye::new(config.fov_range, config.fov_angle, config.eye_cells);
         let brain = Brain::random(rng, &eye);
 
         Creature::new(eye, brain, rng, &config)

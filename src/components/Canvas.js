@@ -73,7 +73,11 @@ export default function Canvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const food of world.foods) {
-        ctx.drawFood(food.x * canvas.width, food.y * canvas.height, (0.01 / 2.0) * canvas.width);
+        ctx.drawFood(
+          food.x * canvas.width,
+          food.y * canvas.height,
+          (simConfig.food_size / 2.0) * canvas.width
+        );
       }
 
       for (const creature of world.creatures) {

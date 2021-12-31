@@ -18,6 +18,9 @@ pub struct Config {
     pub rotation_accel: f32,
     pub mutation_rate: f32,
     pub mutation_strength: f32,
+    pub fov_range: f32,
+    pub fov_angle: f32,
+    pub eye_cells: usize,
 }
 
 #[wasm_bindgen]
@@ -51,6 +54,9 @@ impl From<sim::Config> for Config {
             rotation_accel: config.rotation_accel,
             mutation_rate: config.mutation_rate,
             mutation_strength: config.mutation_strength,
+            fov_range: config.fov_range,
+            fov_angle: config.fov_angle,
+            eye_cells: config.eye_cells,
         }
     }
 }
@@ -73,6 +79,9 @@ impl Into<sim::Config> for Config {
             rotation_accel: self.rotation_accel,
             mutation_rate: self.mutation_rate,
             mutation_strength: self.mutation_strength,
+            fov_range: self.fov_range,
+            fov_angle: self.fov_angle,
+            eye_cells: self.eye_cells,
         }
     }
 }

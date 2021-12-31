@@ -1,4 +1,4 @@
-use std::f32::consts::FRAC_PI_2;
+use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
 
 pub struct Config {
     pub population_count: usize, // Number of individuals in the population
@@ -16,6 +16,9 @@ pub struct Config {
     pub rotation_accel: f32,     // Change in rotation per update
     pub mutation_rate: f32,      // Probability of mutation [0, 1]
     pub mutation_strength: f32,  // Multiplied factor of mutation
+    pub fov_range: f32,
+    pub fov_angle: f32,
+    pub eye_cells: usize,
 }
 
 impl Config {
@@ -35,6 +38,9 @@ impl Config {
         rotation_accel: f32,
         mutation_rate: f32,
         mutation_strength: f32,
+        fov_range: f32,
+        fov_angle: f32,
+        eye_cells: usize,
     ) -> Config {
         Config {
             population_count,
@@ -52,6 +58,9 @@ impl Config {
             rotation_accel,
             mutation_rate,
             mutation_strength,
+            fov_range,
+            fov_angle,
+            eye_cells,
         }
     }
 }
@@ -74,6 +83,9 @@ impl Default for Config {
             rotation_accel: FRAC_PI_2,
             mutation_rate: 0.01,
             mutation_strength: 0.3,
+            fov_range: 0.25,
+            fov_angle: PI + FRAC_PI_4,
+            eye_cells: 9,
         }
     }
 }

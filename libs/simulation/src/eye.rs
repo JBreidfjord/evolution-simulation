@@ -13,7 +13,7 @@ pub struct Eye {
 }
 
 impl Eye {
-    fn new(fov_range: f32, fov_angle: f32, cells: usize) -> Eye {
+    pub fn new(fov_range: f32, fov_angle: f32, cells: usize) -> Eye {
         assert!(fov_range > 0.0);
         assert!(fov_angle > 0.0);
         assert!(cells > 0);
