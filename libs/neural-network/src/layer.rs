@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 crate struct Layer {
     crate neurons: Vec<Neuron>,
 }

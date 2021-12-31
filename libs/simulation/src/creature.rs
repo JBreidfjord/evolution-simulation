@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Creature {
     crate position: na::Point2<f32>,
     // Could replace rotation and speed with velocity Vector2
