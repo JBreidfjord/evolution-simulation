@@ -144,7 +144,7 @@ impl Simulation {
                     })
                     .unwrap();
 
-                let new_creature = self
+                let mut new_creature = self
                     .ga
                     .breed(
                         rng,
@@ -152,6 +152,7 @@ impl Simulation {
                         &CreatureIndividual::from_creature(nearest_creature),
                     )
                     .into_creature(rng, &self.config);
+                new_creature.energy = self.config.reproduction_cost;
                 new_creatures.push(new_creature);
             }
         }

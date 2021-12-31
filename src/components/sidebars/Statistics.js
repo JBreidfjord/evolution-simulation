@@ -33,11 +33,10 @@ export default function Statistics() {
       <h2>Statistics</h2>
       {world && (
         <>
-          <p>Remaining Pop: {remainingPopulation}</p>
+          <p>Population Count: {remainingPopulation}</p>
           <p>Max Fitness: {maxFitness}</p>
           <p>Min Fitness: {minFitness}</p>
           <p>Avg Fitness: {avgFitness}</p>
-          <p>Avg Surv Fitness: {avgSurvivingFitness}</p>
         </>
       )}
     </div>

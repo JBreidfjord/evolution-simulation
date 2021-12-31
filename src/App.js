@@ -33,8 +33,9 @@ export default function App() {
     setClickOpenModal(false);
   };
 
+  // Check for extinction
   useEffect(() => {
-    if (world.creatures.filter((creature) => creature.alive).length === 0 && simulation.age() > 0) {
+    if (world.creatures.length === 0 && simulation.age() > 0) {
       setIsPaused(true);
       setSimReady(false);
       handleExtinctionModalOpen();
