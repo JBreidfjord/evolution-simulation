@@ -18,10 +18,10 @@ impl Layer {
         Layer { neurons }
     }
 
-    crate fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+    crate fn propagate(&self, inputs: Vec<f32>, activate: Option<bool>) -> Vec<f32> {
         self.neurons
             .iter()
-            .map(|neuron| neuron.propagate(&inputs))
+            .map(|neuron| neuron.propagate(&inputs, activate))
             .collect()
     }
 
@@ -86,7 +86,7 @@ mod tests {
                 ],
             };
 
-            let prop = layer.propagate(vec![0.3, 0.6]);
+            let prop = layer.propagate(vec![0.3, 0.6], None);
             assert_relative_eq!(prop.as_slice(), [0.525, 0.95].as_ref());
         }
     }
