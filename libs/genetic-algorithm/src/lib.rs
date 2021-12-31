@@ -65,6 +65,22 @@ where
 
         new_population
     }
+
+    pub fn breed<I>(&self, rng: &mut dyn rand::RngCore, parent_a: &I, parent_b: &I) -> I
+    where
+        I: Individual,
+    {
+        // No Selection
+        // Crossover
+        let mut child =
+            self.crossover_method
+                .crossover(rng, parent_a.chromosome(), parent_b.chromosome());
+
+        // Mutation
+        self.mutation_method.mutate(rng, &mut child);
+
+        I::create(child)
+    }
 }
 
 #[cfg(test)]
