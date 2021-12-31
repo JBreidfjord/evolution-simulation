@@ -91,8 +91,11 @@ impl Simulation {
 
     fn process_movement(&mut self) {
         for creature in &mut self.world.creatures {
-            creature.position +=
-                creature.body.rotation * na::Vector2::new(creature.body.speed, 0.0);
+            creature.position += creature.body.rotation
+                * na::Vector2::new(
+                    creature.body.speed * (creature.body.size / self.config.creature_size).tanh(),
+                    0.0,
+                );
 
             creature.position.x = creature.position.x.clamp(LOWER_BOUND_X, UPPER_BOUND_X);
             creature.position.y = creature.position.y.clamp(LOWER_BOUND_Y, UPPER_BOUND_Y);
@@ -104,7 +107,7 @@ impl Simulation {
             for food in &mut self.world.foods {
                 let distance = na::distance(&creature.position, &food.position);
 
-                if distance <= (self.config.creature_size + self.config.food_size) / 2.0 {
+                if distance <= (creature.body.size + self.config.food_size) / 2.0 {
                     creature.body.energy += self.config.food_energy;
                     creature.satiation += 1;
                     food.position = rng.gen();
