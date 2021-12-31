@@ -122,7 +122,7 @@ impl Simulation {
 
         let mut reproduced_indices = Vec::new();
         let mut new_creatures = Vec::new();
-        for (idx, creature) in self.world.creatures.iter_mut().enumerate() {
+        for (idx, creature) in self.world.creatures.iter().enumerate() {
             if creature.body.energy >= self.config.reproduction_threshold {
                 // Prevent duplicated reproduction
                 if reproduced_indices.contains(&idx) {
@@ -156,8 +156,8 @@ impl Simulation {
                     .ga
                     .breed(
                         rng,
-                        &CreatureIndividual::from_creature(creature),
-                        &CreatureIndividual::from_creature(nearest_creature),
+                        CreatureIndividual::from_creature(creature),
+                        CreatureIndividual::from_creature(nearest_creature),
                     )
                     .into_creature(rng, &self.config);
                 new_creature.body.energy = self.config.reproduction_cost * 2.0; // Energy from parents
