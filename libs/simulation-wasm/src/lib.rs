@@ -30,6 +30,7 @@ pub struct Creature {
     pub rotation: f32,
     pub fitness: f32,
     pub energy: f32,
+    pub size: f32,
     pub generation: usize,
 }
 
@@ -87,6 +88,7 @@ impl From<&sim::World> for World {
                 rotation: creature.rotation,
                 fitness: creature.fitness,
                 energy: creature.energy,
+                size: creature.size,
                 generation: creature.generation,
             })
             .collect();
@@ -105,6 +107,7 @@ impl From<&sim::Creature> for Creature {
             rotation: creature.rotation().angle(),
             fitness: creature.fitness(),
             energy: creature.energy(),
+            size: creature.size(),
             generation: creature.generation(),
         }
     }

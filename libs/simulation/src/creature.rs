@@ -16,10 +16,10 @@ impl Creature {
         let brain = Brain::random(rng, &eye);
         let body = Body::random(rng, config);
 
-        Creature::new(eye, brain, body, rng, &config)
+        Creature::new(eye, brain, body, rng)
     }
 
-    fn new(eye: Eye, brain: Brain, body: Body, rng: &mut dyn RngCore, config: &Config) -> Creature {
+    fn new(eye: Eye, brain: Brain, body: Body, rng: &mut dyn RngCore) -> Creature {
         Creature {
             position: rng.gen(),
             eye,
@@ -50,11 +50,15 @@ impl Creature {
         let brain = Brain::from_chromosome(brain_chromosome, &eye);
         let body = Body::from_chromosome(body_chromosome, rng, config);
 
-        Creature::new(eye, brain, body, rng, &config)
+        Creature::new(eye, brain, body, rng)
     }
 
     pub fn position(&self) -> na::Point2<f32> {
         self.position
+    }
+
+    pub fn rotation(&self) -> na::Rotation2<f32> {
+        self.body.rotation
     }
 
     pub fn generation(&self) -> usize {
@@ -67,5 +71,13 @@ impl Creature {
         } else {
             self.satiation as f32
         }
+    }
+
+    pub fn energy(&self) -> f32 {
+        self.body.energy
+    }
+
+    pub fn size(&self) -> f32 {
+        self.body.size
     }
 }
