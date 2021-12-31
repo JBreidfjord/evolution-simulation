@@ -64,18 +64,12 @@ impl Simulation {
         *self.sim.age()
     }
 
-    pub fn step(&mut self) -> bool {
-        // Return bool to indicate if the generation has ended
-        if self.sim.step(&mut self.rng) {
-            self.generation += 1;
-            true
-        } else {
-            false
-        }
+    pub fn step(&mut self) {
+        self.sim.step(&mut self.rng)
     }
 
     pub fn train(&mut self) {
-        self.sim.train(&mut self.rng);
+        self.sim.train();
         self.generation += 1;
     }
 }
