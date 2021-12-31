@@ -77,15 +77,13 @@ export default function Canvas() {
       }
 
       for (const creature of world.creatures) {
-        if (creature.alive) {
-          ctx.drawCreature(
-            creature.x * canvas.width,
-            creature.y * canvas.height,
-            simConfig.creature_size * canvas.width,
-            creature.rotation,
-            creature.fitness / world.foods.length
-          );
-        }
+        ctx.drawCreature(
+          creature.x * canvas.width,
+          creature.y * canvas.height,
+          simConfig.creature_size * canvas.width,
+          creature.rotation,
+          creature.fitness / world.foods.length
+        );
       }
     };
 

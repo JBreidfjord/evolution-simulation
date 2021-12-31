@@ -11,6 +11,7 @@ pub struct Creature {
     crate satiation: usize,
     crate energy: f32,
     crate alive: bool,
+    crate generation: usize,
 }
 
 impl Creature {
@@ -31,6 +32,7 @@ impl Creature {
             satiation: 0,
             energy: config.starting_energy,
             alive: true,
+            generation: 0,
         }
     }
 
@@ -62,8 +64,8 @@ impl Creature {
         self.energy
     }
 
-    pub fn alive(&self) -> bool {
-        self.alive
+    pub fn generation(&self) -> usize {
+        self.generation
     }
 
     pub fn fitness(&self) -> f32 {

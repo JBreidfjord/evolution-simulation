@@ -165,6 +165,7 @@ impl Simulation {
                     .into_creature(rng, &self.config);
                 new_creature.energy = self.config.reproduction_cost * 2.0; // Energy from parents
                 new_creature.position = na::center(&creature.position, &nearest_creature.position);
+                new_creature.generation = creature.generation.max(nearest_creature.generation) + 1;
                 new_creatures.push(new_creature);
 
                 reproduced_indices.push(idx);
