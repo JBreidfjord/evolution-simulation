@@ -68,13 +68,13 @@ impl Config {
 impl Default for Config {
     fn default() -> Config {
         Config {
-            population_count: 20,
-            food_count: 40,
+            population_count: 40,
+            food_count: 20,
             creature_size: 0.01,
             food_size: 0.01,
             starting_energy: 100.0,
             food_energy: 25.0,
-            energy_loss_factor: 50.0,
+            energy_loss_factor: 30.0,
             reproduction_cost: 50.0,
             reproduction_threshold: 100.0,
             speed_min: 0.001,
@@ -83,7 +83,7 @@ impl Default for Config {
             rotation_accel: FRAC_PI_2,
             mutation_rate: 0.01,
             mutation_strength: 0.3,
-            fov_range: 0.25,
+            fov_range: 0.5,
             fov_angle: PI + FRAC_PI_4,
             eye_cells: 9,
         }
