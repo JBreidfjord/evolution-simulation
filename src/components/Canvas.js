@@ -16,7 +16,7 @@ const getPixelRatio = (ctx) => {
   return (window.devicePixelRatio || 1) / backingStore;
 };
 
-CanvasRenderingContext2D.prototype.drawCreature = function (x, y, size, rotation, fitness) {
+CanvasRenderingContext2D.prototype.drawCreature = function (x, y, size, rotation, color) {
   const ctx = this;
 
   ctx.beginPath();
@@ -31,7 +31,7 @@ CanvasRenderingContext2D.prototype.drawCreature = function (x, y, size, rotation
   );
   ctx.closePath();
 
-  ctx.fillStyle = `hsl(${fitness * 360}, 100%, 50%)`;
+  ctx.fillStyle = `hsl(${color * 360}, 100%, 50%)`;
   ctx.fill();
 };
 
@@ -84,9 +84,9 @@ export default function Canvas() {
         ctx.drawCreature(
           creature.x * canvas.width,
           creature.y * canvas.height,
-          simConfig.creature_size * canvas.width,
+          creature.size * canvas.width,
           creature.rotation,
-          creature.fitness / world.foods.length
+          creature.color
         );
       }
     };
