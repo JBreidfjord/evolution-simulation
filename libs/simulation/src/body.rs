@@ -32,7 +32,7 @@ impl Body {
     }
 
     crate fn as_chromosome(&self) -> ga::Chromosome {
-        ga::Chromosome::from_iter(vec![self.size * 10.0, self.color * 10.0])
+        ga::Chromosome::from_iter(vec![self.size * 10.0, self.color * 5.0])
     }
 
     crate fn from_chromosome(
@@ -41,8 +41,8 @@ impl Body {
         config: &Config,
     ) -> Body {
         let size =
-            (chromosome[0] / 10.0).clamp(config.creature_size / 10.0, config.creature_size * 10.0);
-        let color = (chromosome[1] / 10.0).clamp(0.0, 1.0);
+            (chromosome[0] / 10.0).clamp(config.creature_size / 5.0, config.creature_size * 5.0);
+        let color = (chromosome[1] / 5.0).clamp(0.0, 1.0);
 
         Body::new(rng, size, color, config)
     }
