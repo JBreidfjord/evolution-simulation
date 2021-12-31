@@ -18,8 +18,8 @@ impl Chromosome {
         self.genes.iter_mut()
     }
 
-    pub fn split_at(&mut self, index: usize) -> [Chromosome; 2] {
-        let (left, right) = self.genes.split_at_mut(index);
+    pub fn split_at(self, index: usize) -> [Chromosome; 2] {
+        let (left, right) = self.genes.split_at(index);
         [
             Chromosome {
                 genes: left.to_vec(),

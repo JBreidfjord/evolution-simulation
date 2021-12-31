@@ -32,9 +32,7 @@ impl Body {
     }
 
     crate fn as_chromosome(&self) -> ga::Chromosome {
-        ga::Chromosome {
-            genes: vec![self.size, self.color],
-        }
+        ga::Chromosome::from_iter(vec![self.size, self.color])
     }
 
     crate fn from_chromosome(
@@ -46,6 +44,11 @@ impl Body {
         let color = chromosome[1];
 
         Body::new(rng, size, color, config)
+    }
+
+    crate fn process_energy(&mut self, rotation: f32, config: &Config) {
+        self.energy -=
+            config.energy_loss_factor * (rotation.abs() + self.speed + (5.0 * self.size));
     }
 
     pub fn size(&self) -> f32 {
