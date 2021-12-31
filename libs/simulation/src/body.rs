@@ -24,9 +24,26 @@ impl Body {
         }
     }
 
-    pub fn random(rng: &mut dyn RngCore, config: &Config) -> Body {
+    crate fn random(rng: &mut dyn RngCore, config: &Config) -> Body {
         let size = rng.gen_range((config.creature_size / 2.0)..=(config.creature_size * 1.5));
         let color = rng.gen();
+
+        Body::new(rng, size, color, config)
+    }
+
+    crate fn as_chromosome(&self) -> ga::Chromosome {
+        ga::Chromosome {
+            genes: vec![self.size, self.color],
+        }
+    }
+
+    crate fn from_chromosome(
+        chromosome: ga::Chromosome,
+        rng: &mut dyn RngCore,
+        config: &Config,
+    ) -> Body {
+        let size = chromosome[0];
+        let color = chromosome[1];
 
         Body::new(rng, size, color, config)
     }

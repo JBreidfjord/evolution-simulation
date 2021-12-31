@@ -3,14 +3,10 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct Creature {
     crate position: na::Point2<f32>,
-    // Could replace rotation and speed with velocity Vector2
-    crate rotation: na::Rotation2<f32>,
-    crate speed: f32,
     crate eye: Eye,
     crate brain: Brain,
+    crate body: Body,
     crate satiation: usize,
-    crate energy: f32,
-    crate alive: bool,
     crate generation: usize,
 }
 
@@ -18,27 +14,28 @@ impl Creature {
     pub fn random(rng: &mut dyn RngCore, config: &Config) -> Creature {
         let eye = Eye::new(config.fov_range, config.fov_angle, config.eye_cells);
         let brain = Brain::random(rng, &eye);
+        let body = Body::random(rng, config);
 
-        Creature::new(eye, brain, rng, &config)
+        Creature::new(eye, brain, body, rng, &config)
     }
 
-    fn new(eye: Eye, brain: Brain, rng: &mut dyn RngCore, config: &Config) -> Creature {
+    fn new(eye: Eye, brain: Brain, body: Body, rng: &mut dyn RngCore, config: &Config) -> Creature {
         Creature {
             position: rng.gen(),
-            rotation: rng.gen(),
-            speed: config.speed_min,
             eye,
             brain,
+            body,
             satiation: 0,
-            energy: config.starting_energy,
-            alive: true,
             generation: 0,
         }
     }
 
     crate fn as_chromosome(&self) -> ga::Chromosome {
-        // Could add more encoding here for things like size or colour
-        self.brain.as_chromosome()
+        self.brain
+            .as_chromosome()
+            .into_iter()
+            .chain(self.body.as_chromosome().into_iter())
+            .collect()
     }
 
     crate fn from_chromosome(
@@ -46,22 +43,18 @@ impl Creature {
         rng: &mut dyn RngCore,
         config: &Config,
     ) -> Creature {
-        let eye = Eye::default();
-        let brain = Brain::from_chromosome(chromosome, &eye);
+        let brain_chromosome_length = config.eye_cells * (2 * config.eye_cells + 4);
+        let [brain_chromosome, body_chromosome] = chromosome.split_at(brain_chromosome_length);
 
-        Creature::new(eye, brain, rng, &config)
+        let eye = Eye::new(config.fov_range, config.fov_angle, config.eye_cells);
+        let brain = Brain::from_chromosome(brain_chromosome, &eye);
+        let body = Body::from_chromosome(body_chromosome, rng, config);
+
+        Creature::new(eye, brain, body, rng, &config)
     }
 
     pub fn position(&self) -> na::Point2<f32> {
         self.position
-    }
-
-    pub fn rotation(&self) -> na::Rotation2<f32> {
-        self.rotation
-    }
-
-    pub fn energy(&self) -> f32 {
-        self.energy
     }
 
     pub fn generation(&self) -> usize {
@@ -69,7 +62,7 @@ impl Creature {
     }
 
     pub fn fitness(&self) -> f32 {
-        if !self.alive {
+        if self.body.energy <= 0.0 {
             0.0
         } else {
             self.satiation as f32
