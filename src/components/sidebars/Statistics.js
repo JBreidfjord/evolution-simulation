@@ -13,6 +13,32 @@ export default function Statistics() {
   const [avgFitness, setAvgFitness] = useState(0);
   const [minGen, setMinGen] = useState(0);
   const [maxGen, setMaxGen] = useState(0);
+  const [bestGen, setBestGen] = useState(0);
+  const [bestGenFitness, setBestGenFitness] = useState(0);
+
+  const calculateGenStats = () => {
+    const min = Math.min(...world.creatures.map((creature) => creature.generation));
+    const max = Math.max(...world.creatures.map((creature) => creature.generation));
+    setMinGen(min);
+    setMaxGen(max);
+
+    // Create map of each generation's [total fitness, number of individuals]
+    let genMap = {};
+    for (let i = min; i <= max; i++) {
+      genMap[i] = [0, 0];
+    }
+    world.creatures.forEach((creature) => {
+      genMap[creature.generation][0] += creature.fitness;
+      genMap[creature.generation][1] += 1;
+    });
+    if (Object.keys(genMap).length > 0) {
+      const gen = Object.keys(genMap).reduce((a, b) =>
+        genMap[a][0] / genMap[a][1] > genMap[b][0] / genMap[b][1] ? a : b
+      );
+      setBestGen(gen);
+      setBestGenFitness((genMap[gen][0] / genMap[gen][1]).toPrecision(3));
+    }
+  };
 
   useEffect(() => {
     if (world) {
@@ -23,8 +49,7 @@ export default function Statistics() {
       setAvgFitness(
         (creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length).toFixed(2)
       );
-      setMinGen(Math.min(...world.creatures.map((creature) => creature.generation)));
-      setMaxGen(Math.max(...world.creatures.map((creature) => creature.generation)));
+      calculateGenStats();
     }
   }, [world]);
 
@@ -39,6 +64,9 @@ export default function Statistics() {
           <p>Avg Fitness: {avgFitness}</p>
           <p>Oldest Gen: {minGen}</p>
           <p>Youngest Gen: {maxGen}</p>
+          <p>
+            Best Gen: {bestGen} ({bestGenFitness})
+          </p>
         </>
       )}
     </div>
