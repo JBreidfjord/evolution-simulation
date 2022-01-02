@@ -1,4 +1,4 @@
-use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
+use std::f32::consts::{FRAC_PI_4, FRAC_PI_6, PI};
 
 pub struct Config {
     pub population_count: usize, // Number of individuals in the population
@@ -81,10 +81,10 @@ impl Default for Config {
             energy_loss_factor: 5.0,
             reproduction_cost: 50.0,
             reproduction_threshold: 100.0,
-            speed_min: 0.0005,
+            speed_min: 0.0,
             speed_max: 0.0025,
             speed_accel: 0.2,
-            rotation_accel: FRAC_PI_2,
+            rotation_accel: FRAC_PI_6,
             mutation_rate: 0.15,
             mutation_strength: 0.3,
             fov_range: 0.5,
