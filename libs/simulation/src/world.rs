@@ -19,6 +19,7 @@ impl World {
         let food_count =
             (k * config.food_count as f32
                 * (config.target_population as f32 / creatures.len() as f32)) as usize;
+        let food_count = food_count.clamp(0, config.food_count * 3);
         let foods = (0..food_count).map(|_| Food::random(rng)).collect();
 
         World {
@@ -44,6 +45,8 @@ impl World {
             * config.food_count as f32
             * (config.target_population as f32 / self.creatures.len() as f32))
             as usize;
+        self.food_count = self.food_count.clamp(0, config.food_count * 3);
+
         if self.foods.len() < self.food_count {
             self.foods
                 .extend((0..self.food_count - self.foods.len()).map(|_| Food::random(rng)));
