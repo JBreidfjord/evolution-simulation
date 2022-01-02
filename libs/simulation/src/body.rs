@@ -49,7 +49,7 @@ impl Body {
 
     crate fn process_energy(&mut self, rotation: f32, config: &Config) {
         self.energy -= config.energy_loss_factor
-            * (rotation.abs() + self.speed + (10.0 * self.size)).powf(2.0);
+            * ((0.1 * rotation.abs()) + self.speed + (10.0 * self.size)).powf(2.0);
     }
 
     pub fn size(&self) -> f32 {
