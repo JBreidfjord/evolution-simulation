@@ -13,14 +13,13 @@ impl World {
             .map(|_| Creature::random(rng, &config))
             .collect();
 
-        let k = ((config.target_population as isize - creatures.len() as isize) as f32
+        let k = ((config.target_population as f32 - creatures.len() as f32)
             / (config.target_population as f32 * 0.5))
             .exp();
         let food_count =
-            k * config.food_count as f32 * (config.target_population / creatures.len()) as f32;
-        let foods = (0..food_count as usize)
-            .map(|_| Food::random(rng))
-            .collect();
+            (k * config.food_count as f32
+                * (config.target_population as f32 / creatures.len() as f32)) as usize;
+        let foods = (0..food_count).map(|_| Food::random(rng)).collect();
 
         World {
             creatures,
@@ -38,12 +37,13 @@ impl World {
     }
 
     pub fn update_food(&mut self, config: &Config, rng: &mut dyn RngCore) {
-        let k = ((config.target_population as isize - self.creatures.len() as isize) as f32
+        let k = ((config.target_population as f32 - self.creatures.len() as f32)
             / (config.target_population as f32 * 0.5))
             .exp();
-        self.food_count =
-            (k * config.food_count as f32
-                * (config.target_population / self.creatures.len()) as f32) as usize;
+        self.food_count = (k
+            * config.food_count as f32
+            * (config.target_population as f32 / self.creatures.len() as f32))
+            as usize;
         if self.foods.len() < self.food_count {
             self.foods
                 .extend((0..self.food_count - self.foods.len()).map(|_| Food::random(rng)));
