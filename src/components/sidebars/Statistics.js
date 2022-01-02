@@ -15,6 +15,7 @@ export default function Statistics() {
   const [maxGen, setMaxGen] = useState(0);
   const [bestGen, setBestGen] = useState(0);
   const [bestGenFitness, setBestGenFitness] = useState(0);
+  const [avgSize, setAvgSize] = useState(0);
 
   const calculateGenStats = () => {
     const min = Math.min(...world.creatures.map((creature) => creature.generation));
@@ -49,6 +50,12 @@ export default function Statistics() {
       setAvgFitness(
         (creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length).toFixed(2)
       );
+      setAvgSize(
+        (
+          world.creatures.map((creature) => creature.size).reduce((a, b) => a + b, 0) /
+          world.creatures.length
+        ).toFixed(3)
+      );
       calculateGenStats();
     }
   }, [world]);
@@ -62,6 +69,7 @@ export default function Statistics() {
           <p>Max Fitness: {maxFitness}</p>
           <p>Min Fitness: {minFitness}</p>
           <p>Avg Fitness: {avgFitness}</p>
+          <p>Avg Size: {avgSize}</p>
           <p>Oldest Gen: {minGen}</p>
           <p>Youngest Gen: {maxGen}</p>
           <p>

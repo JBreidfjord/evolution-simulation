@@ -66,7 +66,7 @@ where
         new_population
     }
 
-    pub fn breed<I>(&self, rng: &mut dyn rand::RngCore, parent_a: &I, parent_b: &I) -> I
+    pub fn breed<I>(&self, rng: &mut dyn rand::RngCore, parent_a: I, parent_b: I) -> I
     where
         I: Individual,
     {

@@ -17,14 +17,19 @@ impl Neuron {
         Neuron { weights, bias }
     }
 
-    crate fn propagate(&self, inputs: &Vec<f32>) -> f32 {
+    crate fn propagate(&self, inputs: &Vec<f32>, activate: Option<bool>) -> f32 {
         let sum = inputs
             .iter()
             .zip(&self.weights)
             .map(|(input, weight)| weight * input)
             .sum::<f32>();
 
-        (sum + self.bias).max(0.0)
+        let activate = activate.unwrap_or(true);
+        if activate {
+            (sum + self.bias).max(0.0)
+        } else {
+            sum + self.bias
+        }
     }
 
     pub fn from_weights(output_neurons: usize, weights: &mut dyn Iterator<Item = f32>) -> Neuron {
@@ -69,9 +74,12 @@ mod tests {
             };
 
             // Ensures ReLU activation function is used
-            assert_relative_eq!(neuron.propagate(&vec![-10.0, -10.0]), 0.0);
+            assert_relative_eq!(neuron.propagate(&vec![-10.0, -10.0], None), 0.0);
 
-            assert_relative_eq!(neuron.propagate(&vec![1.0, 0.5]), 1.25);
+            // Test deactivating the activation function
+            assert_relative_eq!(neuron.propagate(&vec![-10.0, -10.0], Some(false)), -9.5);
+
+            assert_relative_eq!(neuron.propagate(&vec![1.0, 0.5], None), 1.25);
         }
     }
 }
