@@ -84,7 +84,7 @@ impl Default for Config {
             speed_min: 0.0,
             speed_max: 0.0025,
             speed_accel: 0.2,
-            rotation_accel: FRAC_PI_6,
+            rotation_accel: FRAC_PI_6 / 2.0,
             mutation_rate: 0.15,
             mutation_strength: 0.3,
             fov_range: 0.5,
