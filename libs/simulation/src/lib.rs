@@ -114,6 +114,7 @@ impl Simulation {
                 }
             }
         }
+        self.world.update_food(&self.config, rng);
     }
 
     fn process_evolution(&mut self, rng: &mut dyn RngCore) {
