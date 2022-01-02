@@ -8,6 +8,7 @@ export default function Statistics() {
   const { world } = useSim();
 
   const [populationCount, setPopulationCount] = useState(0);
+  const [foodCount, setFoodCount] = useState(0);
   const [maxFitness, setMaxFitness] = useState(0);
   const [minFitness, setMinFitness] = useState(0);
   const [avgFitness, setAvgFitness] = useState(0);
@@ -44,6 +45,7 @@ export default function Statistics() {
   useEffect(() => {
     if (world) {
       setPopulationCount(world.creatures.length);
+      setFoodCount(world.foods.length);
       const creatureFitness = world.creatures.map((creature) => creature.fitness);
       setMaxFitness(Math.max(...creatureFitness));
       setMinFitness(Math.min(...creatureFitness));
@@ -66,6 +68,7 @@ export default function Statistics() {
       {world && (
         <>
           <p>Population Count: {populationCount}</p>
+          <p>Food Count: {foodCount}</p>
           <p>Max Fitness: {maxFitness}</p>
           <p>Min Fitness: {minFitness}</p>
           <p>Avg Fitness: {avgFitness}</p>
