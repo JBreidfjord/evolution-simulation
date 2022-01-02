@@ -18,9 +18,9 @@ impl Network {
     }
 
     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-        let mut activation_iter = (0..3).map(move |i| match i {
-            0..=1 => true,
-            2 => false,
+        let mut activation_iter = (0..2).map(move |i| match i {
+            0 => true,
+            1 => false,
             _ => unreachable!(),
         });
         self.layers.iter().fold(inputs, |inputs, layer| {
