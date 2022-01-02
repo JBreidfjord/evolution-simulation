@@ -2,20 +2,21 @@ use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
 
 pub struct Config {
     pub population_count: usize, // Number of individuals in the population
-    pub food_count: usize,       // Number of food in the world
-    pub creature_size: f32,      // Size of the creatures
-    pub food_size: f32,          // Size of the food
-    pub starting_energy: f32,    // Starting energy of the creatures
-    pub food_energy: f32,        // Energy gained from each food
-    pub energy_loss_factor: f32, // Energy lost each tick * Creature speed
-    pub reproduction_cost: f32,  // Energy cost to reproduce
+    pub target_population: usize,
+    pub food_count: usize,           // Number of food in the world
+    pub creature_size: f32,          // Size of the creatures
+    pub food_size: f32,              // Size of the food
+    pub starting_energy: f32,        // Starting energy of the creatures
+    pub food_energy: f32,            // Energy gained from each food
+    pub energy_loss_factor: f32,     // Energy lost each tick * Creature speed
+    pub reproduction_cost: f32,      // Energy cost to reproduce
     pub reproduction_threshold: f32, // Threshold for allowing reproduction
-    pub speed_min: f32,          // Minimum Creature speed
-    pub speed_max: f32,          // Maximum Creature speed
-    pub speed_accel: f32,        // Change in speed per update
-    pub rotation_accel: f32,     // Change in rotation per update
-    pub mutation_rate: f32,      // Probability of mutation [0, 1]
-    pub mutation_strength: f32,  // Multiplied factor of mutation
+    pub speed_min: f32,              // Minimum Creature speed
+    pub speed_max: f32,              // Maximum Creature speed
+    pub speed_accel: f32,            // Change in speed per update
+    pub rotation_accel: f32,         // Change in rotation per update
+    pub mutation_rate: f32,          // Probability of mutation [0, 1]
+    pub mutation_strength: f32,      // Multiplied factor of mutation
     pub fov_range: f32,
     pub fov_angle: f32,
     pub eye_cells: usize,
@@ -24,6 +25,7 @@ pub struct Config {
 impl Config {
     pub fn new(
         population_count: usize,
+        target_population: usize,
         food_count: usize,
         creature_size: f32,
         food_size: f32,
@@ -44,6 +46,7 @@ impl Config {
     ) -> Config {
         Config {
             population_count,
+            target_population,
             food_count,
             creature_size,
             food_size,
@@ -69,16 +72,17 @@ impl Default for Config {
     fn default() -> Config {
         Config {
             population_count: 80,
+            target_population: 400,
             food_count: 30,
-            creature_size: 0.01,
-            food_size: 0.01,
+            creature_size: 0.005,
+            food_size: 0.005,
             starting_energy: 100.0,
             food_energy: 25.0,
             energy_loss_factor: 5.0,
             reproduction_cost: 50.0,
             reproduction_threshold: 100.0,
-            speed_min: 0.001,
-            speed_max: 0.005,
+            speed_min: 0.0005,
+            speed_max: 0.0025,
             speed_accel: 0.2,
             rotation_accel: FRAC_PI_2,
             mutation_rate: 0.15,
