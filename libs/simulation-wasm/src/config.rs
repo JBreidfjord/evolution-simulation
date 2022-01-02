@@ -4,6 +4,7 @@ use crate::*;
 #[wasm_bindgen(inspectable)]
 pub struct Config {
     pub population_count: usize,
+    pub target_population: usize,
     pub food_count: usize,
     pub creature_size: f32,
     pub food_size: f32,
@@ -40,6 +41,7 @@ impl From<sim::Config> for Config {
     fn from(config: sim::Config) -> Config {
         Config {
             population_count: config.population_count,
+            target_population: config.target_population,
             food_count: config.food_count,
             creature_size: config.creature_size,
             food_size: config.food_size,
@@ -65,6 +67,7 @@ impl Into<sim::Config> for Config {
     fn into(self) -> sim::Config {
         sim::Config {
             population_count: self.population_count,
+            target_population: self.target_population,
             food_count: self.food_count,
             creature_size: self.creature_size,
             food_size: self.food_size,
