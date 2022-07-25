@@ -1,9 +1,9 @@
 use crate::*;
 
 #[derive(Debug, Clone)]
-crate struct Neuron {
-    crate weights: Vec<f32>,
-    crate bias: f32,
+pub(crate) struct Neuron {
+    pub(crate) weights: Vec<f32>,
+    pub(crate) bias: f32,
 }
 
 impl Neuron {
@@ -17,7 +17,7 @@ impl Neuron {
         Neuron { weights, bias }
     }
 
-    crate fn propagate(&self, inputs: &Vec<f32>, activate: Option<bool>) -> f32 {
+    pub(crate) fn propagate(&self, inputs: &Vec<f32>, activate: Option<bool>) -> f32 {
         let sum = inputs
             .iter()
             .zip(&self.weights)
