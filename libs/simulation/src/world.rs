@@ -2,9 +2,9 @@ use crate::*;
 
 #[derive(Debug)]
 pub struct World {
-    crate creatures: Vec<Creature>,
-    crate foods: Vec<Food>,
-    crate food_count: usize,
+    pub(crate) creatures: Vec<Creature>,
+    pub(crate) foods: Vec<Food>,
+    pub(crate) food_count: usize,
 }
 
 impl World {

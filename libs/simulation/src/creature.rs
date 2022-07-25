@@ -2,12 +2,12 @@ use crate::*;
 
 #[derive(Debug, Clone)]
 pub struct Creature {
-    crate position: na::Point2<f32>,
-    crate eye: Eye,
-    crate brain: Brain,
-    crate body: Body,
-    crate satiation: usize,
-    crate generation: usize,
+    pub(crate) position: na::Point2<f32>,
+    pub(crate) eye: Eye,
+    pub(crate) brain: Brain,
+    pub(crate) body: Body,
+    pub(crate) satiation: usize,
+    pub(crate) generation: usize,
 }
 
 impl Creature {
@@ -30,7 +30,7 @@ impl Creature {
         }
     }
 
-    crate fn as_chromosome(&self) -> ga::Chromosome {
+    pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
         self.brain
             .as_chromosome()
             .into_iter()
@@ -38,7 +38,7 @@ impl Creature {
             .collect()
     }
 
-    crate fn from_chromosome(
+    pub(crate) fn from_chromosome(
         chromosome: ga::Chromosome,
         rng: &mut dyn RngCore,
         config: &Config,
