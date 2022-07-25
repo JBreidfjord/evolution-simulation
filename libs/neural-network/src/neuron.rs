@@ -17,19 +17,13 @@ impl Neuron {
         Neuron { weights, bias }
     }
 
-    pub(crate) fn propagate(&self, inputs: &Vec<f32>, activate: Option<bool>) -> f32 {
-        let sum = inputs
+    pub(crate) fn propagate(&self, inputs: &[f32]) -> f32 {
+        inputs
             .iter()
             .zip(&self.weights)
             .map(|(input, weight)| weight * input)
-            .sum::<f32>();
-
-        let activate = activate.unwrap_or(true);
-        if activate {
-            (sum + self.bias).max(0.0)
-        } else {
-            sum + self.bias
-        }
+            .sum::<f32>()
+            + self.bias
     }
 
     pub fn from_weights(output_neurons: usize, weights: &mut dyn Iterator<Item = f32>) -> Neuron {

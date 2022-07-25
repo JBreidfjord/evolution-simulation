@@ -11,21 +11,23 @@ impl Network {
 
         let layers = layers
             .windows(2)
-            .map(|layers| Layer::random(rng, layers[0].neurons, layers[1].neurons))
+            .map(|layers| {
+                Layer::random(
+                    rng,
+                    layers[0].neurons,
+                    layers[1].neurons,
+                    layers[1].activation,
+                )
+            })
             .collect();
 
         Network { layers }
     }
 
     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
-        let mut activation_iter = (0..3).map(move |i| match i {
-            0..=1 => true,
-            2 => false,
-            _ => unreachable!(),
-        });
-        self.layers.iter().fold(inputs, |inputs, layer| {
-            layer.propagate(inputs, activation_iter.next())
-        })
+        self.layers
+            .iter()
+            .fold(inputs, |inputs, layer| layer.propagate(inputs))
     }
 
     pub fn weights(&self) -> impl Iterator<Item = f32> + '_ {
@@ -47,7 +49,14 @@ impl Network {
         let mut weights = weights.into_iter();
         let layers = layers
             .windows(2)
-            .map(|layers| Layer::from_weights(layers[0].neurons, layers[1].neurons, &mut weights))
+            .map(|layers| {
+                Layer::from_weights(
+                    layers[0].neurons,
+                    layers[1].neurons,
+                    &mut weights,
+                    layers[1].activation,
+                )
+            })
             .collect();
 
         if weights.next().is_some() {

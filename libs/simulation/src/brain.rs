@@ -1,3 +1,5 @@
+use lib_neural_network::Activation;
+
 use crate::*;
 
 #[derive(Debug, Clone)]
@@ -26,11 +28,16 @@ impl Brain {
         [
             nn::LayerTopology {
                 neurons: eye.cells(),
+                activation: Activation::ReLU,
             },
             nn::LayerTopology {
                 neurons: 2 * eye.cells(),
+                activation: Activation::ReLU,
             },
-            nn::LayerTopology { neurons: 2 },
+            nn::LayerTopology {
+                neurons: 2,
+                activation: Activation::Tanh,
+            },
         ]
     }
 }
