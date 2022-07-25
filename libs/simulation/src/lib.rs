@@ -1,5 +1,3 @@
-#![feature(crate_visibility_modifier)]
-
 use std::cmp::Ordering;
 
 use nalgebra as na;

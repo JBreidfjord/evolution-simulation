@@ -2,12 +2,12 @@ use crate::*;
 
 #[derive(Debug, Clone)]
 pub struct Body {
-    crate size: f32,
-    crate color: f32,
+    pub(crate) size: f32,
+    pub(crate) color: f32,
     // Could replace rotation and speed with velocity Vector2
-    crate rotation: na::Rotation2<f32>,
-    crate speed: f32,
-    crate energy: f32,
+    pub(crate) rotation: na::Rotation2<f32>,
+    pub(crate) speed: f32,
+    pub(crate) energy: f32,
 }
 
 impl Body {
@@ -24,18 +24,18 @@ impl Body {
         }
     }
 
-    crate fn random(rng: &mut dyn RngCore, config: &Config) -> Body {
+    pub(crate) fn random(rng: &mut dyn RngCore, config: &Config) -> Body {
         let size = rng.gen_range((config.creature_size / 2.0)..=(config.creature_size * 1.5));
         let color = rng.gen();
 
         Body::new(rng, size, color, config)
     }
 
-    crate fn as_chromosome(&self) -> ga::Chromosome {
+    pub(crate) fn as_chromosome(&self) -> ga::Chromosome {
         ga::Chromosome::from_iter(vec![self.size * 10.0, self.color * 5.0])
     }
 
-    crate fn from_chromosome(
+    pub(crate) fn from_chromosome(
         chromosome: ga::Chromosome,
         rng: &mut dyn RngCore,
         config: &Config,
@@ -47,7 +47,7 @@ impl Body {
         Body::new(rng, size, color, config)
     }
 
-    crate fn process_energy(&mut self, rotation: f32, config: &Config) {
+    pub(crate) fn process_energy(&mut self, rotation: f32, config: &Config) {
         self.energy -= config.energy_loss_factor
             * (rotation.abs() + self.speed + (10.0 * self.size)).powf(2.0);
     }
