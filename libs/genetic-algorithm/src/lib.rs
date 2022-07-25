@@ -1,6 +1,3 @@
-#![feature(type_alias_impl_trait)]
-#![feature(crate_visibility_modifier)]
-
 use rand::seq::SliceRandom;
 use rand::Rng;
 use std::iter::FromIterator;
