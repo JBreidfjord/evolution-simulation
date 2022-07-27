@@ -1,17 +1,17 @@
-import "./App.css";
+import './App.css';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import ConfigForm from "./components/modals/ConfigForm";
-import Entry from "./components/modals/Entry";
-import Extinction from "./components/modals/Extinction";
-import Modal from "./components/modals/Modal";
-import Controls from "./components/sidebars/Controls";
-import LeftSidebar from "./components/sidebars/LeftSidebar";
-import RightSidebar from "./components/sidebars/RightSidebar";
-import Statistics from "./components/sidebars/Statistics";
-import Simulation from "./components/Simulation";
-import { useSim } from "./hooks/useSim";
+import ConfigForm from './components/modals/ConfigForm';
+import Entry from './components/modals/Entry';
+import Extinction from './components/modals/Extinction';
+import Modal from './components/modals/Modal';
+import Controls from './components/sidebars/Controls';
+import LeftSidebar from './components/sidebars/LeftSidebar';
+import RightSidebar from './components/sidebars/RightSidebar';
+import Statistics from './components/sidebars/Statistics';
+import Simulation from './components/Simulation';
+import { useSim } from './hooks/useSim';
 
 export default function App() {
   const { simulation, world, setIsPaused } = useSim();

@@ -1,6 +1,6 @@
-import "./Controls.css";
+import './Controls.css';
 
-import { useSim } from "../../hooks/useSim";
+import { useSim } from '../../hooks/useSim';
 
 export default function Controls({ setShowConfigModal }) {
   const { simSpeed, setSimSpeed, isPaused, setIsPaused } = useSim();
@@ -22,7 +22,7 @@ export default function Controls({ setShowConfigModal }) {
       <p>{simSpeed}x</p>
 
       <button onClick={() => setIsPaused(!isPaused)} className="btn">
-        {isPaused ? "Continue" : "Pause"}
+        {isPaused ? 'Continue' : 'Pause'}
       </button>
       <button onClick={() => setShowConfigModal(true)} className="btn">
         Config

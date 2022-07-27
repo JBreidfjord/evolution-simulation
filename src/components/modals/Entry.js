@@ -1,8 +1,9 @@
-import "./Entry.css";
+import './Entry.css';
 
-import { useState } from "react";
-import { useSim } from "../../hooks/useSim";
-import ConfigForm from "./ConfigForm";
+import { useState } from 'react';
+
+import { useSim } from '../../hooks/useSim';
+import ConfigForm from './ConfigForm';
 
 export default function Entry({ setSimReady }) {
   const { setStartNewSim } = useSim();

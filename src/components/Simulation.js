@@ -1,6 +1,7 @@
-import { useEffect } from "react";
-import { useSim } from "../hooks/useSim";
-import Canvas from "./Canvas";
+import { useEffect } from 'react';
+
+import { useSim } from '../hooks/useSim';
+import Canvas from './Canvas';
 
 export default function Simulation() {
   const { simulation, simSpeed, setWorld, isPaused } = useSim();

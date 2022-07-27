@@ -1,8 +1,8 @@
-import "./Canvas.css";
+import './Canvas.css';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-import { useSim } from "../hooks/useSim";
+import { useSim } from '../hooks/useSim';
 
 const getPixelRatio = (ctx) => {
   let backingStore =
@@ -41,7 +41,7 @@ CanvasRenderingContext2D.prototype.drawFood = function (x, y, radius) {
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, 2 * Math.PI);
 
-  ctx.fillStyle = "rgb(100, 190, 100)";
+  ctx.fillStyle = 'rgb(100, 190, 100)';
   ctx.fill();
 };
 
@@ -51,7 +51,7 @@ export default function Canvas() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     const setScale = () => {
       const ratio = getPixelRatio(ctx);

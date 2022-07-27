@@ -8,7 +8,8 @@
     "build:wasm": "wasm-pack build libs/simulation-wasm --out-dir ../../wasm --out-name simulation",
     "build": "npm run build:wasm && npx webpack",
     "init-rust-toolchain": "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh",
-    "github:deploy": "npm ci && npm run init-rust-toolchain && npm run build"
+    "github:deploy": "npm ci && npm run init-rust-toolchain && npm run build",
+    "lint": "npx eslint ./src --fix"
   },
   "keywords": [],
   "author": "Jonathan Breidfjord <jbreidfjord@gmail.com>",

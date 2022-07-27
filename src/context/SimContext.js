@@ -1,6 +1,6 @@
-import * as sim from "../../wasm/simulation";
+import { createContext, useEffect, useState } from 'react';
 
-import { createContext, useEffect, useState } from "react";
+import * as sim from '../../wasm/simulation';
 
 export const SimContext = createContext();
 
@@ -33,7 +33,7 @@ export const SimProvider = ({ children }) => {
 
   return (
     <SimContext.Provider
-      value={ {
+      value={{
         newSim,
         simulation,
         setSimulation,
@@ -46,9 +46,9 @@ export const SimProvider = ({ children }) => {
         isPaused,
         setIsPaused,
         setStartNewSim,
-      } }
+      }}
     >
-      { children }
+      {children}
     </SimContext.Provider>
   );
 };

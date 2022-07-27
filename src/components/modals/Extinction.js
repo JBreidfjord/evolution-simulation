@@ -1,8 +1,9 @@
-import "./Extinction.css";
+import './Extinction.css';
 
-import { useState } from "react";
-import { useSim } from "../../hooks/useSim";
-import ConfigForm from "./ConfigForm";
+import { useState } from 'react';
+
+import { useSim } from '../../hooks/useSim';
+import ConfigForm from './ConfigForm';
 
 export default function Extinction({ handleClose, setSimReady }) {
   const { setStartNewSim } = useSim();

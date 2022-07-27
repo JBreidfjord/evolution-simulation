@@ -1,23 +1,23 @@
-import "./Sidebar.css";
+import './Sidebar.css';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function RightSidebar({ children }) {
-  const [open, setOpen] = useState("");
+  const [open, setOpen] = useState('');
 
   const handleClose = (e) => {
     e.preventDefault();
     if (e.currentTarget === e.target) {
-      setOpen("");
+      setOpen('');
     }
   };
 
   return (
     <>
-      <div className="sidebar-toggle right" onClick={() => setOpen("open")}>
-        {"<"}
+      <div className="sidebar-toggle right" onClick={() => setOpen('open')}>
+        {'<'}
       </div>
-      <div className={"sidebar right" + ` ${open}`} onClick={handleClose}>
+      <div className={'sidebar right' + ` ${open}`} onClick={handleClose}>
         {open && children}
       </div>
     </>
