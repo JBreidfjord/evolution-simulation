@@ -60,7 +60,7 @@ export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormPr
     <>
       <button
         className="btn close"
-        onClick={() => isNestedConfig ? handleClose(false) : handleClose}
+        onClick={() => isNestedConfig ? handleClose(false) : handleClose()}
       >
         X
       </button>
