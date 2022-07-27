@@ -11,8 +11,8 @@ export default function Modal({ children, handleClose }) {
   };
 
   return ReactDOM.createPortal(
-    <div className="modal-backdrop" onClick={handleClick}>
-      <div className="modal">{children}</div>
+    <div className="modal-backdrop" onClick={ handleClick }>
+      <div className="modal">{ children }</div>
     </div>,
     document.body
   );

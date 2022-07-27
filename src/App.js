@@ -3,14 +3,14 @@ import "./App.css";
 import { useEffect, useState } from "react";
 
 import ConfigForm from "./components/modals/ConfigForm";
-import Controls from "./components/sidebars/Controls";
 import Entry from "./components/modals/Entry";
 import Extinction from "./components/modals/Extinction";
-import LeftSidebar from "./components/sidebars/LeftSidebar";
 import Modal from "./components/modals/Modal";
+import Controls from "./components/sidebars/Controls";
+import LeftSidebar from "./components/sidebars/LeftSidebar";
 import RightSidebar from "./components/sidebars/RightSidebar";
-import Simulation from "./components/Simulation";
 import Statistics from "./components/sidebars/Statistics";
+import Simulation from "./components/Simulation";
 import { useSim } from "./hooks/useSim";
 
 export default function App() {
@@ -52,30 +52,30 @@ export default function App() {
   return (
     <div className="App">
       <LeftSidebar>
-        <Controls setShowConfigModal={setShowConfigModal} />
+        <Controls setShowConfigModal={ setShowConfigModal } />
       </LeftSidebar>
       <RightSidebar>
         <Statistics />
       </RightSidebar>
-      {clickOpenModal && (
-        <div className="modal-open-screen" onClick={() => handleExtinctionModalOpen()}></div>
-      )}
+      { clickOpenModal && (
+        <div className="modal-open-screen" onClick={ () => handleExtinctionModalOpen() }></div>
+      ) }
       <Simulation />
-      {showConfigModal && (
-        <Modal handleClose={() => setShowConfigModal(false)}>
-          <ConfigForm handleClose={() => setShowConfigModal(false)} />
+      { showConfigModal && (
+        <Modal handleClose={ () => setShowConfigModal(false) }>
+          <ConfigForm handleClose={ () => setShowConfigModal(false) } />
         </Modal>
-      )}
-      {showExtinctionModal && (
-        <Modal handleClose={handleExtinctionModalClose}>
-          <Extinction handleClose={handleExtinctionModalClose} setSimReady={setSimReady} />
+      ) }
+      { showExtinctionModal && (
+        <Modal handleClose={ handleExtinctionModalClose }>
+          <Extinction handleClose={ handleExtinctionModalClose } setSimReady={ setSimReady } />
         </Modal>
-      )}
-      {showEntryModal && (
+      ) }
+      { showEntryModal && (
         <Modal>
-          <Entry setSimReady={setSimReady} />
+          <Entry setSimReady={ setSimReady } />
         </Modal>
-      )}
+      ) }
     </div>
   );
 }

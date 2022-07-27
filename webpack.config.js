@@ -43,6 +43,11 @@ module.exports = {
     }),
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, "./libs/simulation-wasm/"),
+      watchDirectories: [
+        path.resolve(__dirname, "./libs/")
+      ],
+      outDir: path.resolve(__dirname, "wasm"),
+      outName: "simulation"
     }),
   ],
   mode: "development",

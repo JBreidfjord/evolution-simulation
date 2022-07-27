@@ -1,8 +1,8 @@
 import "./Extinction.css";
 
-import ConfigForm from "./ConfigForm";
-import { useSim } from "../../hooks/useSim";
 import { useState } from "react";
+import { useSim } from "../../hooks/useSim";
+import ConfigForm from "./ConfigForm";
 
 export default function Extinction({ handleClose, setSimReady }) {
   const { setStartNewSim } = useSim();
@@ -22,24 +22,24 @@ export default function Extinction({ handleClose, setSimReady }) {
 
   return (
     <div className="extinction">
-      {!showConfig ? (
+      { !showConfig ? (
         <>
-          <button className="btn close" onClick={handleClose}>
+          <button className="btn close" onClick={ handleClose }>
             X
           </button>
           <h2>Extinction</h2>
           <div className="button-group">
-            <button className="btn" onClick={handleRepopulate}>
+            <button className="btn" onClick={ handleRepopulate }>
               Repopulate
             </button>
-            <button className="btn" onClick={() => setShowConfig(true)}>
+            <button className="btn" onClick={ () => setShowConfig(true) }>
               Config
             </button>
           </div>
         </>
       ) : (
-        <ConfigForm handleClose={handleConfigClose} isNestedConfig={true} />
-      )}
+        <ConfigForm handleClose={ handleConfigClose } isNestedConfig={ true } />
+      ) }
     </div>
   );
 }

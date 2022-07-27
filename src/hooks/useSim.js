@@ -1,5 +1,5 @@
-import { SimContext } from "../context/SimContext";
 import { useContext } from "react";
+import { SimContext } from "../context/SimContext";
 
 export const useSim = () => {
   const context = useContext(SimContext);
