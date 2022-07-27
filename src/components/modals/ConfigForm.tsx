@@ -46,7 +46,7 @@ export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormPr
     isNestedConfig ? handleClose(true) : handleClose();
   };
 
-  const resetOptions = (current = true) => {
+  const resetOptions = (current) => {
     if (current) {
       setConfigOptions(Object.keys(simConfig.toJSON()));
       setConfig(simConfig.toJSON());
@@ -100,7 +100,7 @@ export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormPr
         </div>
         <div className="button-group">
           <span>Reset:</span>
-          <button className="btn" onClick={resetOptions}>
+          <button className="btn" onClick={() => resetOptions(true)}>
             Current
           </button>
           <button className="btn" onClick={() => resetOptions(false)}>
