@@ -1,8 +1,8 @@
 import "./Entry.css";
 
-import ConfigForm from "./ConfigForm";
-import { useSim } from "../../hooks/useSim";
 import { useState } from "react";
+import { useSim } from "../../hooks/useSim";
+import ConfigForm from "./ConfigForm";
 
 export default function Entry({ setSimReady }) {
   const { setStartNewSim } = useSim();
@@ -23,30 +23,30 @@ export default function Entry({ setSimReady }) {
 
   return (
     <div className="entry">
-      {!showInfo ? (
+      { !showInfo ? (
         !showConfig ? (
           <>
             <h2>Flying Microcosmic Societies</h2>
             <h4>Vol. 2</h4>
             <p>An Evolution Simulation</p>
             <div className="button-group">
-              <button className="btn" onClick={handlePopulate}>
+              <button className="btn" onClick={ handlePopulate }>
                 Populate
               </button>
-              <button className="btn" onClick={() => setShowConfig(true)}>
+              <button className="btn" onClick={ () => setShowConfig(true) }>
                 Config
               </button>
-              <button className="btn" onClick={() => setShowInfo(true)}>
+              <button className="btn" onClick={ () => setShowInfo(true) }>
                 Info
               </button>
             </div>
           </>
         ) : (
-          <ConfigForm handleClose={handleConfigClose} isNestedConfig={true} />
+          <ConfigForm handleClose={ handleConfigClose } isNestedConfig={ true } />
         )
       ) : (
         <>
-          <button className="btn close" onClick={() => setShowInfo(false)}>
+          <button className="btn close" onClick={ () => setShowInfo(false) }>
             X
           </button>
           <p>
@@ -55,11 +55,11 @@ export default function Entry({ setSimReady }) {
             goal is to reproduce and pass on their genes to the next generation. To do so they must
             consume enough food to survive, and reproduce when they have the energy to do so.
           </p>
-          <button className="btn" onClick={() => setShowInfo(false)}>
+          <button className="btn" onClick={ () => setShowInfo(false) }>
             Back
           </button>
         </>
-      )}
+      ) }
     </div>
   );
 }

@@ -106,5 +106,5 @@ export default function Canvas() {
     return () => cancelAnimationFrame(requestId);
   }, [world, simConfig, window.innerWidth, window.innerHeight, isPaused]);
 
-  return <canvas ref={canvasRef} />;
+  return <canvas ref={ canvasRef } />;
 }
