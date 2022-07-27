@@ -30,11 +30,6 @@ impl Config {
     pub fn from_object(obj: &JsValue) -> Config {
         obj.into_serde().unwrap_or_default()
     }
-
-    #[wasm_bindgen(js_name = intoObject)]
-    pub fn into_object(&self) -> JsValue {
-        JsValue::from_serde(self).unwrap()
-    }
 }
 
 impl From<sim::Config> for Config {

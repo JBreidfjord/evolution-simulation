@@ -23,6 +23,7 @@ pub struct World {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[wasm_bindgen]
 pub struct Creature {
     pub id: usize,
     pub x: f32,
@@ -36,6 +37,7 @@ pub struct Creature {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[wasm_bindgen]
 pub struct Food {
     pub x: f32,
     pub y: f32,

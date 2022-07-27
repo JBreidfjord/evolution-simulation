@@ -11,4 +11,4 @@ getrandom = { version = "0.2.3", features = ["js"] }
 lib-simulation = { path = "../simulation" }
 rand = "0.8.4"
 serde = { version = "1.0.130", features = ["derive"] }
-wasm-bindgen = { version = "0.2.78", features = ["serde-serialize"] }
+wasm-bindgen = { version = "0.2.82", features = ["serde-serialize"] }
