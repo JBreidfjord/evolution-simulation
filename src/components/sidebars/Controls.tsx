@@ -6,7 +6,7 @@ interface ControlsProps {
   setShowConfigModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Controls({ setShowConfigModal }: ControlsProps) {
+export default function Controls({ setShowConfigModal }: ControlsProps): JSX.Element {
   const { simSpeed, setSimSpeed, isPaused, setIsPaused } = useSim();
 
   return (

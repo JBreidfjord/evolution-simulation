@@ -4,13 +4,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App';
-import { SimProvider } from './context/SimContext';
+import { SimContextProvider } from './context/SimContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <SimProvider>
+    <SimContextProvider>
       <App />
-    </SimProvider>
+    </SimContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

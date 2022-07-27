@@ -7,8 +7,8 @@ interface ModalProps {
   handleClose?(): void
 }
 
-export default function Modal({ children, handleClose }: ModalProps) {
-  const handleClick = (e) => {
+export default function Modal({ children, handleClose }: ModalProps): JSX.Element {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     e.preventDefault();
     if (e.currentTarget === e.target && handleClose) {
       handleClose();

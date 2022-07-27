@@ -2,10 +2,14 @@ import './Sidebar.css';
 
 import { useState } from 'react';
 
-export default function LeftSidebar({ children }) {
+interface LeftSidebarProps {
+  children: React.ReactNode
+}
+
+export default function LeftSidebar({ children }: LeftSidebarProps): JSX.Element {
   const [open, setOpen] = useState('');
 
-  const handleClose = (e) => {
+  const handleClose = (e: React.MouseEvent<HTMLDivElement>): void => {
     e.preventDefault();
     if (e.currentTarget === e.target) {
       setOpen('');

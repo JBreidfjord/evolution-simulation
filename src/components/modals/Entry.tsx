@@ -5,17 +5,21 @@ import { useState } from 'react';
 import { useSim } from '../../hooks/useSim';
 import ConfigForm from './ConfigForm';
 
-export default function Entry({ setIsSimReady }) {
+interface EntryProps {
+  setIsSimReady: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Entry({ setIsSimReady }: EntryProps): JSX.Element {
   const { setStartNewSim } = useSim();
   const [showInfo, setShowInfo] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
 
-  const handlePopulate = () => {
+  const handlePopulate = (): void => {
     setStartNewSim(true);
     setIsSimReady(true);
   };
 
-  const handleConfigClose = (isSimReady) => {
+  const handleConfigClose = (isSimReady: boolean): void => {
     setShowConfig(false);
     if (isSimReady) {
       setIsSimReady(true);

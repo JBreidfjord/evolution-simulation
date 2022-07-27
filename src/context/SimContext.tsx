@@ -21,13 +21,15 @@ export interface SimContextProps {
 const notImplemented = (): void => {
   throw new Error('Function not implemented');
 };
+const initialConfig = new Config({});
+const initialSim = new Simulation(initialConfig);
 const initialState: SimContextProps = {
   newSim: notImplemented,
-  simulation: null,
+  simulation: initialSim,
   setSimulation: notImplemented,
-  world: null,
+  world: initialSim.world(),
   setWorld: notImplemented,
-  simConfig: null,
+  simConfig: initialConfig,
   setSimConfig: notImplemented,
   simSpeed: 1,
   setSimSpeed: notImplemented,
@@ -38,7 +40,11 @@ const initialState: SimContextProps = {
 
 export const SimContext = createContext<SimContextProps>(initialState);
 
-export const SimProvider = ({ children }) => {
+interface SimContextProviderProps {
+  children: React.ReactNode
+}
+
+export const SimContextProvider = ({ children }: SimContextProviderProps): JSX.Element => {
   const [simulation, setSimulation] = useState(() => {
     return new Simulation();
   });
@@ -50,7 +56,7 @@ export const SimProvider = ({ children }) => {
   const [isPaused, setIsPaused] = useState(true);
   const [startNewSim, setStartNewSim] = useState(false);
 
-  const newSim = () => {
+  const newSim = (): void => {
     setSimulation(() => {
       return new Simulation(new Config(simConfig.toJSON()));
     });

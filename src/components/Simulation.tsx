@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { useSim } from '../hooks/useSim';
 import Canvas from './Canvas';
 
-export default function Simulation() {
+export default function Simulation(): JSX.Element {
   const { simulation, simSpeed, setWorld, isPaused } = useSim();
 
-  const step = () => {
+  const step = (): void => {
     simulation.step();
     setWorld(simulation.world());
   };

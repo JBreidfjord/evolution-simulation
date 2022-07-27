@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { useSim } from '../../hooks/useSim';
 
-export default function Statistics() {
+export default function Statistics(): JSX.Element {
   const { world } = useSim();
 
   const [populationCount, setPopulationCount] = useState(0);
@@ -18,27 +18,34 @@ export default function Statistics() {
   const [bestGenFitness, setBestGenFitness] = useState(0);
   const [avgSize, setAvgSize] = useState(0);
 
-  const calculateGenStats = () => {
+  const calculateGenStats = (): void => {
     const min = Math.min(...world.creatures.map((creature) => creature.generation));
     const max = Math.max(...world.creatures.map((creature) => creature.generation));
     setMinGen(min);
     setMaxGen(max);
 
     // Create map of each generation's [total fitness, number of individuals]
-    const genMap = {};
+    const genMap = new Map<number, [number, number]>();
     for (let i = min; i <= max; i++) {
-      genMap[i] = [0, 0];
+      genMap.set(i, [0, 0]);
     }
+
     world.creatures.forEach((creature) => {
-      genMap[creature.generation][0] += creature.fitness;
-      genMap[creature.generation][1] += 1;
+      if (!genMap.has(creature.generation)) throw new Error('Error parsing generation map');
+      (genMap.get(creature.generation) as [number, number])[0] += creature.fitness;
+      (genMap.get(creature.generation) as [number, number])[1] += 1;
     });
+
     if (Object.keys(genMap).length > 0) {
-      const gen = Object.keys(genMap).reduce((a, b) =>
-        genMap[a][0] / genMap[a][1] > genMap[b][0] / genMap[b][1] ? a : b
-      );
-      setBestGen(parseInt(gen));
-      setBestGenFitness(genMap[gen][0] / genMap[gen][1]);
+      const gen = Object.keys(genMap).reduce((a, b) => {
+        const [aFitness, aCount] = genMap.get(parseInt(a)) as [number, number];
+        const [bFitness, bCount] = genMap.get(parseInt(b)) as [number, number];
+        return aFitness / aCount > bFitness / bCount ? a : b;
+      });
+      const intGen = parseInt(gen);
+      setBestGen(intGen);
+      const [genFitness, genCreatureCount] = genMap.get(intGen) as [number, number];
+      setBestGenFitness(genFitness / genCreatureCount);
     }
   };
 

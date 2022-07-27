@@ -8,7 +8,7 @@ import { useSim } from '../../hooks/useSim';
 const defaultConfig = new Config({});
 const defaultOptions = Object.keys(defaultConfig.toJSON());
 
-const getStepSize = (value) => {
+const getStepSize = (value: number): number => {
   // Calculates number of decimals in float values to get a suggested step size
   if (value > 1000) {
     return 100;
@@ -26,33 +26,34 @@ interface ConfigFormProps {
   isNestedConfig?: boolean
 }
 
-export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormProps) {
+export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormProps): JSX.Element {
   const { simConfig, setSimConfig, setIsPaused, setStartNewSim } = useSim();
   const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.toJSON()));
-  const [config, setConfig] = useState(simConfig.toJSON());
-  const [configStepSizes, setConfigStepSizes] = useState(null);
+  const [config, setConfig] = useState<Config>(simConfig.toJSON() as Config);
+  const [configStepSizes, setConfigStepSizes] = useState<number[]>([]);
 
   // Get array of step sizes (prevents step size changing when value reaches an integer)
   useEffect(() => {
     if (configOptions) {
-      setConfigStepSizes(configOptions.map((option) => getStepSize(config[option])));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setConfigStepSizes(configOptions.map((option) => getStepSize((config as any)[option])));
     }
   }, [configOptions]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     setIsPaused(true);
     setSimConfig(new Config(config));
     setStartNewSim(true);
     isNestedConfig ? handleClose(true) : handleClose();
   };
 
-  const resetOptions = (current) => {
+  const resetOptions = (current: boolean): void => {
     if (current) {
       setConfigOptions(Object.keys(simConfig.toJSON()));
-      setConfig(simConfig.toJSON());
+      setConfig(simConfig.toJSON() as Config);
     } else {
       setConfigOptions(defaultOptions);
-      setConfig(defaultConfig.toJSON());
+      setConfig(defaultConfig.toJSON() as Config);
     }
   };
 
@@ -77,10 +78,13 @@ export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormPr
                     onChange={(e) =>
                       setConfig((prevConfig) => ({
                         ...prevConfig,
+                        toJSON: prevConfig.toJSON,
+                        free: prevConfig.free,
                         [option]: parseFloat(e.target.value),
                       }))
                     }
-                    value={config[option]}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    value={(config as any)[option]}
                     min={configStepSizes[i]}
                     step={configStepSizes[i]}
                   />

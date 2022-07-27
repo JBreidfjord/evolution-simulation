@@ -5,16 +5,21 @@ import { useState } from 'react';
 import { useSim } from '../../hooks/useSim';
 import ConfigForm from './ConfigForm';
 
-export default function Extinction({ handleClose, setIsSimReady }) {
+interface ExtinctionProps {
+  handleClose(isSimReady?: boolean): void
+  setIsSimReady: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Extinction({ handleClose, setIsSimReady }: ExtinctionProps): JSX.Element {
   const { setStartNewSim } = useSim();
   const [showConfig, setShowConfig] = useState(false);
 
-  const handleRepopulate = () => {
+  const handleRepopulate = (): void => {
     setStartNewSim(true);
     setIsSimReady(true);
   };
 
-  const handleConfigClose = (isSimReady) => {
+  const handleConfigClose = (isSimReady: boolean): void => {
     setShowConfig(false);
     if (isSimReady) {
       handleClose(false);
@@ -25,7 +30,7 @@ export default function Extinction({ handleClose, setIsSimReady }) {
     <div className="extinction">
       { !showConfig ? (
         <>
-          <button className="btn close" onClick={ handleClose }>
+          <button className="btn close" onClick={ () => handleClose() }>
             X
           </button>
           <h2>Extinction</h2>

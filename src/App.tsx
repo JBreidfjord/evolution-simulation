@@ -13,7 +13,7 @@ import Statistics from './components/sidebars/Statistics';
 import Simulation from './components/Simulation';
 import { useSim } from './hooks/useSim';
 
-export default function App() {
+export default function App(): JSX.Element {
   const { simulation, world, setIsPaused } = useSim();
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [showExtinctionModal, setShowExtinctionModal] = useState(false);
@@ -21,14 +21,14 @@ export default function App() {
   const [showEntryModal, setShowEntryModal] = useState(true);
   const [isSimReady, setIsSimReady] = useState(false);
 
-  const handleExtinctionModalClose = (enableClickOpen = true) => {
+  const handleExtinctionModalClose = (enableClickOpen = true): void => {
     setShowExtinctionModal(false);
     if (enableClickOpen) {
       setClickOpenModal(true);
     }
   };
 
-  const handleExtinctionModalOpen = () => {
+  const handleExtinctionModalOpen = (): void => {
     setShowExtinctionModal(true);
     setClickOpenModal(false);
   };

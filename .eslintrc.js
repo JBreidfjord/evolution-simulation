@@ -35,6 +35,14 @@ module.exports = {
     'react',
     '@typescript-eslint'
   ],
+  'overrides': [
+    {
+      'files': ['*.js', '*.jsx'],
+      'rules': {
+        '@typescript-eslint/explicit-function-return-type': 'off',
+      }
+    }
+  ],
   'rules': {
     'indent': [
       'error',
@@ -52,6 +60,7 @@ module.exports = {
       'error',
       'always'
     ],
+    '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
     'sort-imports': [
       'warn',
       {
