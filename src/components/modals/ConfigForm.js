@@ -1,6 +1,6 @@
 import "./ConfigForm.css";
 
-import * as sim from "../../../build/lib_simulation_wasm";
+import * as sim from "../../../wasm/simulation";
 
 import { useEffect, useState } from "react";
 
@@ -56,50 +56,50 @@ export default function ConfigForm({ handleClose, isNestedConfig }) {
     <>
       <button
         className="btn close"
-        onClick={isNestedConfig ? () => handleClose(false) : handleClose}
+        onClick={ isNestedConfig ? () => handleClose(false) : handleClose }
       >
         X
       </button>
       <div className="config-form">
         <form>
-          {config &&
+          { config &&
             configStepSizes &&
             configOptions.map((option, i) => {
               return (
-                <label key={option}>
-                  <span>{option}:</span>
+                <label key={ option }>
+                  <span>{ option }:</span>
                   <input
                     type="number"
-                    onChange={(e) =>
+                    onChange={ (e) =>
                       setConfig((prevConfig) => ({
                         ...prevConfig,
                         [option]: parseFloat(e.target.value),
                       }))
                     }
-                    value={config[option]}
-                    min={configStepSizes[i]}
-                    step={configStepSizes[i]}
+                    value={ config[option] }
+                    min={ configStepSizes[i] }
+                    step={ configStepSizes[i] }
                   />
                 </label>
               );
-            })}
+            }) }
         </form>
         <div className="button-group">
-          {isNestedConfig && (
-            <button className="btn" onClick={() => handleClose(false)}>
+          { isNestedConfig && (
+            <button className="btn" onClick={ () => handleClose(false) }>
               Back
             </button>
-          )}
-          <button className="btn submit" onClick={handleSubmit}>
+          ) }
+          <button className="btn submit" onClick={ handleSubmit }>
             Submit
           </button>
         </div>
         <div className="button-group">
           <span>Reset:</span>
-          <button className="btn" onClick={resetOptions}>
+          <button className="btn" onClick={ resetOptions }>
             Current
           </button>
-          <button className="btn" onClick={() => resetOptions(false)}>
+          <button className="btn" onClick={ () => resetOptions(false) }>
             Default
           </button>
         </div>
