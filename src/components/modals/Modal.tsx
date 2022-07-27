@@ -2,7 +2,12 @@ import './Modal.css';
 
 import ReactDOM from 'react-dom';
 
-export default function Modal({ children, handleClose }) {
+interface ModalProps {
+  children: React.ReactNode;
+  handleClose?(): void
+}
+
+export default function Modal({ children, handleClose }: ModalProps) {
   const handleClick = (e) => {
     e.preventDefault();
     if (e.currentTarget === e.target && handleClose) {
