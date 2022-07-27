@@ -2,12 +2,11 @@ import './ConfigForm.css';
 
 import { useEffect, useState } from 'react';
 
-import * as sim from '../../../wasm/simulation';
+import { Config } from '../../../wasm/simulation';
 import { useSim } from '../../hooks/useSim';
 
-
-const defaultConfig = new sim.Config();
-const defaultOptions = Object.keys(defaultConfig.intoObject());
+const defaultConfig = new Config({});
+const defaultOptions = Object.keys(defaultConfig.toJSON());
 
 const getStepSize = (value) => {
   // Calculates number of decimals in float values to get a suggested step size
@@ -22,10 +21,15 @@ const getStepSize = (value) => {
   return decimals ? 10 ** -(decimals.split('').findIndex((d) => d !== '0') + 1) : 1;
 };
 
-export default function ConfigForm({ handleClose, isNestedConfig }) {
+interface ConfigFormProps {
+  handleClose(isSimReady?: boolean): void,
+  isNestedConfig?: boolean
+}
+
+export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormProps) {
   const { simConfig, setSimConfig, setIsPaused, setStartNewSim } = useSim();
-  const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.intoObject()));
-  const [config, setConfig] = useState(simConfig.intoObject());
+  const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.toJSON()));
+  const [config, setConfig] = useState(simConfig.toJSON());
   const [configStepSizes, setConfigStepSizes] = useState(null);
 
   // Get array of step sizes (prevents step size changing when value reaches an integer)
@@ -37,18 +41,18 @@ export default function ConfigForm({ handleClose, isNestedConfig }) {
 
   const handleSubmit = () => {
     setIsPaused(true);
-    setSimConfig(new sim.Config(config));
+    setSimConfig(new Config(config));
     setStartNewSim(true);
     isNestedConfig ? handleClose(true) : handleClose();
   };
 
   const resetOptions = (current = true) => {
     if (current) {
-      setConfigOptions(Object.keys(simConfig.intoObject()));
-      setConfig(simConfig.intoObject());
+      setConfigOptions(Object.keys(simConfig.toJSON()));
+      setConfig(simConfig.toJSON());
     } else {
       setConfigOptions(defaultOptions);
-      setConfig(defaultConfig.intoObject());
+      setConfig(defaultConfig.toJSON());
     }
   };
 
@@ -56,7 +60,7 @@ export default function ConfigForm({ handleClose, isNestedConfig }) {
     <>
       <button
         className="btn close"
-        onClick={isNestedConfig ? () => handleClose(false) : handleClose}
+        onClick={() => isNestedConfig ? handleClose(false) : handleClose}
       >
         X
       </button>
