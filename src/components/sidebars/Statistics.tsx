@@ -25,7 +25,7 @@ export default function Statistics() {
     setMaxGen(max);
 
     // Create map of each generation's [total fitness, number of individuals]
-    let genMap = {};
+    const genMap = {};
     for (let i = min; i <= max; i++) {
       genMap[i] = [0, 0];
     }
@@ -37,8 +37,8 @@ export default function Statistics() {
       const gen = Object.keys(genMap).reduce((a, b) =>
         genMap[a][0] / genMap[a][1] > genMap[b][0] / genMap[b][1] ? a : b
       );
-      setBestGen(gen);
-      setBestGenFitness((genMap[gen][0] / genMap[gen][1]).toPrecision(3));
+      setBestGen(parseInt(gen));
+      setBestGenFitness(genMap[gen][0] / genMap[gen][1]);
     }
   };
 
@@ -49,14 +49,10 @@ export default function Statistics() {
       const creatureFitness = world.creatures.map((creature) => creature.fitness);
       setMaxFitness(Math.max(...creatureFitness));
       setMinFitness(Math.min(...creatureFitness));
-      setAvgFitness(
-        (creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length).toFixed(2)
-      );
+      setAvgFitness(creatureFitness.reduce((a, b) => a + b, 0) / creatureFitness.length);
       setAvgSize(
-        (
-          world.creatures.map((creature) => creature.size).reduce((a, b) => a + b, 0) /
-          world.creatures.length
-        ).toFixed(3)
+        world.creatures.map((creature) => creature.size).reduce((a, b) => a + b, 0) /
+        world.creatures.length
       );
       calculateGenStats();
     }
@@ -71,12 +67,12 @@ export default function Statistics() {
           <p>Food Count: {foodCount}</p>
           <p>Max Fitness: {maxFitness}</p>
           <p>Min Fitness: {minFitness}</p>
-          <p>Avg Fitness: {avgFitness}</p>
-          <p>Avg Size: {avgSize}</p>
+          <p>Avg Fitness: {avgFitness.toFixed(2)}</p>
+          <p>Avg Size: {avgSize.toFixed(3)}</p>
           <p>Oldest Gen: {minGen}</p>
           <p>Youngest Gen: {maxGen}</p>
           <p>
-            Best Gen: {bestGen} ({bestGenFitness})
+            Best Gen: {bestGen} ({bestGenFitness.toPrecision(3)})
           </p>
         </>
       )}
