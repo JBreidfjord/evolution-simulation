@@ -19,7 +19,7 @@ export default function App() {
   const [showExtinctionModal, setShowExtinctionModal] = useState(false);
   const [clickOpenModal, setClickOpenModal] = useState(false);
   const [showEntryModal, setShowEntryModal] = useState(true);
-  const [simReady, setSimReady] = useState(false);
+  const [isSimReady, setIsSimReady] = useState(false);
 
   const handleExtinctionModalClose = (enableClickOpen = true) => {
     setShowExtinctionModal(false);
@@ -37,17 +37,17 @@ export default function App() {
   useEffect(() => {
     if (world.creatures.length === 0 && simulation.age() > 0) {
       setIsPaused(true);
-      setSimReady(false);
+      setIsSimReady(false);
       handleExtinctionModalOpen();
     }
   }, [world]);
 
   useEffect(() => {
-    if (simReady) {
+    if (isSimReady) {
       setShowEntryModal(false);
       handleExtinctionModalClose(false);
     }
-  }, [simReady]);
+  }, [isSimReady]);
 
   return (
     <div className="App">
@@ -58,7 +58,7 @@ export default function App() {
         <Statistics />
       </RightSidebar>
       { clickOpenModal && (
-        <div className="modal-open-screen" onClick={ () => handleExtinctionModalOpen() }></div>
+        <div className="modal-open-screen" onClick={ handleExtinctionModalOpen }></div>
       ) }
       <Simulation />
       { showConfigModal && (
@@ -68,12 +68,12 @@ export default function App() {
       ) }
       { showExtinctionModal && (
         <Modal handleClose={ handleExtinctionModalClose }>
-          <Extinction handleClose={ handleExtinctionModalClose } setSimReady={ setSimReady } />
+          <Extinction handleClose={ handleExtinctionModalClose } setIsSimReady={ setIsSimReady } />
         </Modal>
       ) }
       { showEntryModal && (
         <Modal>
-          <Entry setSimReady={ setSimReady } />
+          <Entry setIsSimReady={ setIsSimReady } />
         </Modal>
       ) }
     </div>

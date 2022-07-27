@@ -5,20 +5,20 @@ import { useState } from 'react';
 import { useSim } from '../../hooks/useSim';
 import ConfigForm from './ConfigForm';
 
-export default function Entry({ setSimReady }) {
+export default function Entry({ setIsSimReady }) {
   const { setStartNewSim } = useSim();
   const [showInfo, setShowInfo] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
 
   const handlePopulate = () => {
     setStartNewSim(true);
-    setSimReady(true);
+    setIsSimReady(true);
   };
 
-  const handleConfigClose = (simReady) => {
+  const handleConfigClose = (isSimReady) => {
     setShowConfig(false);
-    if (simReady) {
-      setSimReady(true);
+    if (isSimReady) {
+      setIsSimReady(true);
     }
   };
 

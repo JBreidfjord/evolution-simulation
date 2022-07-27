@@ -5,18 +5,18 @@ import { useState } from 'react';
 import { useSim } from '../../hooks/useSim';
 import ConfigForm from './ConfigForm';
 
-export default function Extinction({ handleClose, setSimReady }) {
+export default function Extinction({ handleClose, setIsSimReady }) {
   const { setStartNewSim } = useSim();
   const [showConfig, setShowConfig] = useState(false);
 
   const handleRepopulate = () => {
     setStartNewSim(true);
-    setSimReady(true);
+    setIsSimReady(true);
   };
 
-  const handleConfigClose = (simReady) => {
+  const handleConfigClose = (isSimReady) => {
     setShowConfig(false);
-    if (simReady) {
+    if (isSimReady) {
       handleClose(false);
     }
   };
