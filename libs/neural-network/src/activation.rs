@@ -38,11 +38,7 @@ fn softmax(inputs: Vec<f32>) -> Vec<f32> {
 }
 
 fn tanh(inputs: Vec<f32>) -> Vec<f32> {
-    // (e^x - e^-x) / (e^x + e^-x)
-    inputs
-        .iter()
-        .map(|x| (E.powf(*x) - E.powf(-x)) / (E.powf(*x) + E.powf(-x)))
-        .collect()
+    inputs.iter().map(|x| x.tanh()).collect()
 }
 
 fn none(inputs: Vec<f32>) -> Vec<f32> {
