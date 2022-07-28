@@ -3,6 +3,7 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub(crate) struct Layer {
     pub(crate) neurons: Vec<Neuron>,
+    pub(crate) activation: Activation,
 }
 
 impl Layer {
@@ -10,31 +11,41 @@ impl Layer {
         rng: &mut dyn rand::RngCore,
         input_neurons: usize,
         output_neurons: usize,
+        activation: Activation,
     ) -> Layer {
         let neurons = (0..output_neurons)
             .map(|_| Neuron::random(rng, input_neurons))
             .collect();
 
-        Layer { neurons }
+        Layer {
+            neurons,
+            activation,
+        }
     }
 
-    pub(crate) fn propagate(&self, inputs: Vec<f32>, activate: Option<bool>) -> Vec<f32> {
-        self.neurons
+    pub(crate) fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
+        let outputs = self
+            .neurons
             .iter()
-            .map(|neuron| neuron.propagate(&inputs, activate))
-            .collect()
+            .map(|neuron| neuron.propagate(&inputs))
+            .collect();
+        self.activation.apply(outputs)
     }
 
     pub fn from_weights(
         input_size: usize,
         output_size: usize,
         weights: &mut dyn Iterator<Item = f32>,
+        activation: Activation,
     ) -> Layer {
         let neurons = (0..output_size)
             .map(|_| Neuron::from_weights(input_size, weights))
             .collect();
 
-        Layer { neurons }
+        Layer {
+            neurons,
+            activation,
+        }
     }
 }
 
@@ -51,7 +62,7 @@ mod tests {
         #[test]
         fn test() {
             let mut rng = ChaCha8Rng::from_seed(Default::default());
-            let layer = Layer::random(&mut rng, 2, 2);
+            let layer = Layer::random(&mut rng, 2, 2, Activation::None);
 
             assert_relative_eq!(layer.neurons[0].bias, 0.8181262);
             assert_relative_eq!(
@@ -84,10 +95,63 @@ mod tests {
                         bias: 0.5,
                     },
                 ],
+                activation: Activation::None,
             };
 
-            let prop = layer.propagate(vec![0.3, 0.6], None);
+            let prop = layer.propagate(vec![0.3, 0.6]);
             assert_relative_eq!(prop.as_slice(), [0.525, 0.95].as_ref());
+        }
+
+        #[test]
+        fn test_activation_functions() {
+            let relu_layer = Layer {
+                neurons: vec![
+                    Neuron {
+                        weights: vec![0.25, 0.75],
+                        bias: 0.0,
+                    },
+                    Neuron {
+                        weights: vec![0.5, 0.5],
+                        bias: -0.5,
+                    },
+                ],
+                activation: Activation::ReLU,
+            };
+            let prop = relu_layer.propagate(vec![0.3, 0.6]);
+            assert_relative_eq!(prop.as_slice(), [0.525, 0.0].as_ref());
+
+            let sigmoid_layer = Layer {
+                neurons: vec![
+                    Neuron {
+                        weights: vec![0.25, 0.75],
+                        bias: 1.0,
+                    },
+                    Neuron {
+                        weights: vec![1.5, -1.0],
+                        bias: -0.5,
+                    },
+                ],
+                activation: Activation::Sigmoid,
+            };
+            let prop = sigmoid_layer.propagate(vec![0.3, 0.6]);
+            assert_relative_eq!(prop.as_slice(), [0.82127357, 0.34298956].as_ref());
+
+            let softmax_layer = Layer {
+                neurons: vec![
+                    Neuron {
+                        weights: vec![0.25, 0.75],
+                        bias: 0.0,
+                    },
+                    Neuron {
+                        weights: vec![0.5, 0.5],
+                        bias: 0.5,
+                    },
+                ],
+                activation: Activation::Softmax,
+            };
+            let prop = softmax_layer.propagate(vec![0.3, 0.6]);
+            assert_relative_eq!(prop.iter().sum::<f32>(), 1.0);
+            assert_relative_eq!(prop.as_slice(), [0.3953209, 0.60467905].as_ref());
         }
     }
 }

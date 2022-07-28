@@ -1,4 +1,4 @@
-use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
+use std::f32::consts::{FRAC_PI_4, FRAC_PI_8, PI};
 
 pub struct Config {
     pub population_count: usize, // Number of individuals in the population
@@ -71,23 +71,23 @@ impl Config {
 impl Default for Config {
     fn default() -> Config {
         Config {
-            population_count: 80,
-            target_population: 400,
-            food_count: 30,
+            population_count: 200,
+            target_population: 100,
+            food_count: 15,
             creature_size: 0.005,
             food_size: 0.005,
             starting_energy: 100.0,
-            food_energy: 25.0,
+            food_energy: 75.0,
             energy_loss_factor: 5.0,
             reproduction_cost: 50.0,
             reproduction_threshold: 100.0,
-            speed_min: 0.0005,
+            speed_min: 0.0001,
             speed_max: 0.0025,
             speed_accel: 0.2,
-            rotation_accel: FRAC_PI_2,
+            rotation_accel: FRAC_PI_8 / 2.0,
             mutation_rate: 0.15,
             mutation_strength: 0.3,
-            fov_range: 0.5,
+            fov_range: 0.25,
             fov_angle: PI + FRAC_PI_4,
             eye_cells: 9,
         }
