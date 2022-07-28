@@ -1,11 +1,11 @@
-import "./Canvas.css";
+import './Canvas.css';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-import { useSim } from "../hooks/useSim";
+import { useSim } from '../hooks/useSim';
 
 const getPixelRatio = (ctx) => {
-  let backingStore =
+  const backingStore =
     ctx.backingStorePixelRatio ||
     ctx.webkitBackingStorePixelRatio ||
     ctx.mozBackingStorePixelRatio ||
@@ -17,32 +17,28 @@ const getPixelRatio = (ctx) => {
 };
 
 CanvasRenderingContext2D.prototype.drawCreature = function (x, y, size, rotation, color) {
-  const ctx = this;
-
-  ctx.beginPath();
-  ctx.moveTo(x + Math.cos(rotation) * size * 1.5, y + Math.sin(rotation) * size * 1.5);
-  ctx.lineTo(
+  this.beginPath();
+  this.moveTo(x + Math.cos(rotation) * size * 1.5, y + Math.sin(rotation) * size * 1.5);
+  this.lineTo(
     x + Math.cos(rotation + (2.0 / 3.0) * Math.PI) * size,
     y + Math.sin(rotation + (2.0 / 3.0) * Math.PI) * size
   );
-  ctx.lineTo(
+  this.lineTo(
     x + Math.cos(rotation - (2.0 / 3.0) * Math.PI) * size,
     y + Math.sin(rotation - (2.0 / 3.0) * Math.PI) * size
   );
-  ctx.closePath();
+  this.closePath();
 
-  ctx.fillStyle = `hsl(${color * 360}, 100%, 50%)`;
-  ctx.fill();
+  this.fillStyle = `hsl(${color * 360}, 100%, 50%)`;
+  this.fill();
 };
 
 CanvasRenderingContext2D.prototype.drawFood = function (x, y, radius) {
-  const ctx = this;
+  this.beginPath();
+  this.arc(x, y, radius, 0, 2 * Math.PI);
 
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI);
-
-  ctx.fillStyle = "rgb(100, 190, 100)";
-  ctx.fill();
+  this.fillStyle = 'rgb(100, 190, 100)';
+  this.fill();
 };
 
 export default function Canvas() {
@@ -51,7 +47,7 @@ export default function Canvas() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     const setScale = () => {
       const ratio = getPixelRatio(ctx);
@@ -102,9 +98,9 @@ export default function Canvas() {
       };
     }
 
-    let requestId = render();
+    const requestId = render();
     return () => cancelAnimationFrame(requestId);
   }, [world, simConfig, window.innerWidth, window.innerHeight, isPaused]);
 
-  return <canvas ref={canvasRef} />;
+  return <canvas ref={ canvasRef } />;
 }

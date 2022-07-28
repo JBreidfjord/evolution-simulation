@@ -1,15 +1,14 @@
-import "./ConfigForm.css";
+import './ConfigForm.css';
 
-import * as sim from "../../../build/lib_simulation_wasm";
+import { useEffect, useState } from 'react';
 
-import { useEffect, useState } from "react";
+import { Config } from '../../../wasm/simulation';
+import { useSim } from '../../hooks/useSim';
 
-import { useSim } from "../../hooks/useSim";
+const defaultConfig = new Config({});
+const defaultOptions = Object.keys(defaultConfig.toJSON());
 
-const defaultConfig = new sim.Config();
-const defaultOptions = Object.keys(defaultConfig.intoObject());
-
-const getStepSize = (value) => {
+const getStepSize = (value: number): number => {
   // Calculates number of decimals in float values to get a suggested step size
   if (value > 1000) {
     return 100;
@@ -18,37 +17,43 @@ const getStepSize = (value) => {
   } else if (value > 10) {
     return 1;
   }
-  const decimals = value.toString().split(".")[1];
-  return decimals ? 10 ** -(decimals.split("").findIndex((d) => d !== "0") + 1) : 1;
+  const decimals = value.toString().split('.')[1];
+  return decimals ? 10 ** -(decimals.split('').findIndex((d) => d !== '0') + 1) : 1;
 };
 
-export default function ConfigForm({ handleClose, isNestedConfig }) {
+interface ConfigFormProps {
+  handleClose(isSimReady?: boolean): void,
+  isNestedConfig?: boolean
+}
+
+export default function ConfigForm({ handleClose, isNestedConfig }: ConfigFormProps): JSX.Element {
   const { simConfig, setSimConfig, setIsPaused, setStartNewSim } = useSim();
-  const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.intoObject()));
-  const [config, setConfig] = useState(simConfig.intoObject());
-  const [configStepSizes, setConfigStepSizes] = useState(null);
+  const [configOptions, setConfigOptions] = useState(Object.keys(simConfig.toJSON()));
+  const [config, setConfig] = useState<Config>(simConfig.toJSON() as Config);
+  const [configStepSizes, setConfigStepSizes] = useState<number[]>([]);
 
   // Get array of step sizes (prevents step size changing when value reaches an integer)
   useEffect(() => {
     if (configOptions) {
-      setConfigStepSizes(configOptions.map((option) => getStepSize(config[option])));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setConfigStepSizes(configOptions.map((option) => getStepSize((config as any)[option])));
     }
   }, [configOptions]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     setIsPaused(true);
-    setSimConfig(new sim.Config(config));
+    setSimConfig(new Config(config));
     setStartNewSim(true);
     isNestedConfig ? handleClose(true) : handleClose();
   };
 
-  const resetOptions = (current = true) => {
+  const resetOptions = (current: boolean): void => {
     if (current) {
-      setConfigOptions(Object.keys(simConfig.intoObject()));
-      setConfig(simConfig.intoObject());
+      setConfigOptions(Object.keys(simConfig.toJSON()));
+      setConfig(simConfig.toJSON() as Config);
     } else {
       setConfigOptions(defaultOptions);
-      setConfig(defaultConfig.intoObject());
+      setConfig(defaultConfig.toJSON() as Config);
     }
   };
 
@@ -56,7 +61,7 @@ export default function ConfigForm({ handleClose, isNestedConfig }) {
     <>
       <button
         className="btn close"
-        onClick={isNestedConfig ? () => handleClose(false) : handleClose}
+        onClick={() => isNestedConfig ? handleClose(false) : handleClose()}
       >
         X
       </button>
@@ -73,10 +78,13 @@ export default function ConfigForm({ handleClose, isNestedConfig }) {
                     onChange={(e) =>
                       setConfig((prevConfig) => ({
                         ...prevConfig,
+                        toJSON: prevConfig.toJSON,
+                        free: prevConfig.free,
                         [option]: parseFloat(e.target.value),
                       }))
                     }
-                    value={config[option]}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    value={(config as any)[option]}
                     min={configStepSizes[i]}
                     step={configStepSizes[i]}
                   />
@@ -96,7 +104,7 @@ export default function ConfigForm({ handleClose, isNestedConfig }) {
         </div>
         <div className="button-group">
           <span>Reset:</span>
-          <button className="btn" onClick={resetOptions}>
+          <button className="btn" onClick={() => resetOptions(true)}>
             Current
           </button>
           <button className="btn" onClick={() => resetOptions(false)}>
