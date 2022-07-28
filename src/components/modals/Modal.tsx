@@ -1,9 +1,14 @@
-import "./Modal.css";
+import './Modal.css';
 
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom';
 
-export default function Modal({ children, handleClose }) {
-  const handleClick = (e) => {
+interface ModalProps {
+  children: React.ReactNode;
+  handleClose?(): void
+}
+
+export default function Modal({ children, handleClose }: ModalProps): JSX.Element {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     e.preventDefault();
     if (e.currentTarget === e.target && handleClose) {
       handleClose();
